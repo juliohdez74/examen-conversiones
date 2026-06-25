@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚽ Mundial 2026 – Conversiones Numéricas</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--rojo:#C8102E;--azul:#003DA5;--dorado:#F5A623;
+--verde:#00843D;--blanco:#F7F7F7;--negro:#0A0A0A;
+--gris:#1C1C2E;--gris2:#2A2A3E;
+}
+html{scroll-behavior:smooth}
+body{
+background:var(--negro);color:var(--blanco);
+font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;
+}
+body::before{
+content:'';position:fixed;inset:0;z-index:0;
+background:
+radial-gradient(ellipse at 20% 30%,rgba(0,61,165,.4) 0%,transparent 55%),
+radial-gradient(ellipse at 80% 70%,rgba(200,16,46,.35) 0%,transparent 55%),
+radial-gradient(ellipse at 50% 50%,rgba(0,132,61,.18) 0%,transparent 70%);
+animation:bgPulse 8s ease-in-out infinite alternate;
+}
+@keyframes bgPulse{from{opacity:.7}to{opacity:1}}
+.hex-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.hex-bg span{
+position:absolute;bottom:-80px;
+clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+animation:hexFloat 14s linear infinite;
+}
+.hex-bg span:nth-child(1){left:5%;width:50px;height:50px;background:rgba(245,166,35,.07);animation-delay:0s}
+.hex-bg span:nth-child(2){left:15%;width:35px;height:35px;background:rgba(200,16,46,.08);animation-delay:-3s}
+.hex-bg span:nth-child(3){left:28%;width:70px;height:70px;background:rgba(0,61,165,.07);animation-delay:-6s}
+.hex-bg span:nth-child(4){left:42%;width:45px;height:45px;background:rgba(245,166,35,.06);animation-delay:-1s}
+.hex-bg span:nth-child(5){left:57%;width:60px;height:60px;background:rgba(0,132,61,.07);animation-delay:-9s}
+.hex-bg span:nth-child(6){left:70%;width:80px;height:80px;background:rgba(200,16,46,.06);animation-delay:-4s}
+.hex-bg span:nth-child(7){left:83%;width:40px;height:40px;background:rgba(245,166,35,.08);animation-delay:-11s}
+.hex-bg span:nth-child(8){left:92%;width:55px;height:55px;background:rgba(0,61,165,.06);animation-delay:-7s}
+@keyframes hexFloat{
+0%{transform:translateY(0) rotate(0deg);opacity:0}
+10%{opacity:1}90%{opacity:.8}
+100%{transform:translateY(-110vh) rotate(200deg);opacity:0}
+}
+/* ── MUSIC PLAYER ── */
+#musicBtn{
+position:fixed;bottom:24px;right:24px;z-index:1000;
+width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;
+background:linear-gradient(135deg,var(--dorado),#d4880a);
+color:var(--negro);font-size:1.5rem;
+box-shadow:0 4px 20px rgba(245,166,35,.5);
+transition:transform .2s,box-shadow .2s;
+display:flex;align-items:center;justify-content:center;
+}
+#musicBtn:hover{transform:scale(1.12);box-shadow:0 6px 28px rgba(245,166,35,.7)}
+#musicBtn.playing{
+background:linear-gradient(135deg,var(--verde),#006630);
+animation:musicPulse 1.2s ease-in-out infinite;
+}
+@keyframes musicPulse{
+0%,100%{box-shadow:0 4px 20px rgba(0,132,61,.5)}
+50%{box-shadow:0 4px 34px rgba(0,132,61,.9),0 0 0 8px rgba(0,132,61,.15)}
+}
+#musicLabel{
+position:fixed;bottom:90px;right:24px;z-index:1000;
+background:rgba(22,22,38,.92);border:1px solid rgba(245,166,35,.3);
+border-radius:10px;padding:8px 14px;font-size:.78rem;
+letter-spacing:1.5px;text-transform:uppercase;color:var(--dorado);
+backdrop-filter:blur(8px);pointer-events:none;
+opacity:0;transition:opacity .4s;white-space:nowrap;
+}
+#musicLabel.show{opacity:1}
+#volumeSlider{
+position:fixed;bottom:24px;right:92px;z-index:1000;
+width:80px;height:4px;accent-color:var(--dorado);
+opacity:0;transition:opacity .3s;cursor:pointer;
+}
+#volumeSlider.show{opacity:1}
+/* ── LAYOUT ── */
+#confetti-canvas{position:fixed;inset:0;z-index:999;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:24px 16px 80px}
+header{text-align:center;padding:36px 0 28px;border-bottom:2px solid rgba(245,166,35,.3);margin-bottom:36px}
+.trophy{font-size:3.8rem;display:inline-block;animation:bounce 2s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+header h1{
+font-family:'Bebas Neue',sans-serif;
+font-size:clamp(2.4rem,8vw,4.5rem);
+letter-spacing:5px;line-height:1;margin:10px 0 6px;
+background:linear-gradient(135deg,var(--dorado) 0%,#fff 45%,var(--dorado) 100%);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+header .sub{color:rgba(247,247,247,.55);font-size:.95rem;letter-spacing:3px;text-transform:uppercase}
+.flags{font-size:1.8rem;letter-spacing:6px;margin-top:10px}
+.panel{
+background:rgba(22,22,38,.88);
+border:1px solid rgba(245,166,35,.22);
+border-radius:18px;padding:32px;
+backdrop-filter:blur(12px);
+box-shadow:0 8px 40px rgba(0,0,0,.5);
+}
+#registro h2{
+font-family:'Bebas Neue',sans-serif;font-size:2rem;
+letter-spacing:3px;color:var(--dorado);margin-bottom:6px;
+}
+#registro .desc{color:rgba(247,247,247,.65);margin-bottom:22px;font-size:1.08rem;line-height:1.5}
+.field-label{font-size:.82rem;letter-spacing:2px;text-transform:uppercase;color:rgba(247,247,247,.5);margin-bottom:7px;display:block}
+.text-input{
+width:100%;padding:15px 18px;
+background:rgba(10,10,10,.65);
+border:2px solid rgba(245,166,35,.28);
+border-radius:11px;color:var(--blanco);
+font-family:'Rajdhani',sans-serif;font-size:1.18rem;font-weight:600;
+outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.text-input:focus{border-color:var(--dorado);box-shadow:0 0 0 3px rgba(245,166,35,.15)}
+.text-input::placeholder{color:rgba(247,247,247,.3)}
+.btn{
+display:inline-flex;align-items:center;justify-content:center;gap:8px;
+border:none;border-radius:11px;cursor:pointer;
+font-family:'Bebas Neue',sans-serif;letter-spacing:2px;
+transition:transform .15s,box-shadow .15s,opacity .15s;
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{
+width:100%;padding:15px 28px;font-size:1.35rem;margin-top:22px;
+background:linear-gradient(135deg,var(--dorado),#d4880a);color:var(--negro);
+}
+.btn-check{
+flex:1;padding:13px 20px;font-size:1.2rem;
+background:linear-gradient(135deg,var(--azul),#0047b3);color:#fff;
+}
+.btn-next{
+flex:1;padding:13px 20px;font-size:1.2rem;
+background:linear-gradient(135deg,var(--verde),#006630);color:#fff;
+}
+.btn-export{
+padding:10px 20px;font-size:1rem;
+background:linear-gradient(135deg,#1a6b1a,#0f4a0f);color:#fff;
+}
+.btn-clear{
+padding:10px 20px;font-size:1rem;
+background:linear-gradient(135deg,#6b1a1a,#4a0f0f);color:#fff;
+}
+.btn-restart{
+padding:14px 36px;font-size:1.3rem;
+background:linear-gradient(135deg,var(--dorado),#d4880a);color:var(--negro);
+}
+#juego{display:none}
+.student-bar{
+display:flex;align-items:center;gap:10px;
+background:rgba(0,61,165,.22);border:1px solid rgba(0,61,165,.45);
+border-radius:11px;padding:11px 16px;margin-bottom:22px;font-size:1rem;
+}
+.student-bar strong{color:var(--dorado)}
+.score-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.score-badge{
+flex:1;min-width:80px;text-align:center;
+background:rgba(10,10,10,.55);border:1px solid rgba(245,166,35,.18);
+border-radius:11px;padding:11px 8px;
+}
+.score-badge .val{font-family:'Bebas Neue',sans-serif;font-size:2.1rem;line-height:1}
+.score-badge .lbl{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:rgba(247,247,247,.5);margin-top:3px}
+.sb-ok .val{color:var(--verde)}.sb-no .val{color:var(--rojo)}
+.sb-tot .val{color:var(--dorado)}.sb-rest .val{color:#7ec8e3}
+.bloque-tag{
+display:inline-block;background:var(--rojo);color:#fff;
+font-size:.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+padding:4px 12px;border-radius:6px;margin-bottom:14px;
+}
+.problema-card{
+background:linear-gradient(135deg,rgba(0,61,165,.22),rgba(200,16,46,.12));
+border:2px solid rgba(245,166,35,.38);
+border-radius:15px;padding:30px 28px;margin-bottom:22px;
+position:relative;overflow:hidden;
+}
+.problema-card::after{
+content:'⚽';position:absolute;right:18px;top:14px;
+font-size:3rem;opacity:.1;pointer-events:none;
+}
+.prob-num{font-family:'Bebas Neue',sans-serif;font-size:.95rem;color:rgba(247,247,247,.4);letter-spacing:2px;margin-bottom:8px}
+.prob-txt{font-family:'Share Tech Mono',monospace;font-size:clamp(1.35rem,3.5vw,1.9rem);line-height:1.4;color:var(--blanco)}
+.resp-wrap{margin-bottom:18px}
+.resp-wrap label{display:block;font-size:.82rem;letter-spacing:2px;text-transform:uppercase;color:rgba(247,247,247,.5);margin-bottom:7px}
+.resp-input{
+width:100%;padding:14px 18px;
+background:rgba(10,10,10,.7);
+border:2px solid rgba(245,166,35,.28);
+border-radius:11px;color:var(--blanco);
+font-family:'Share Tech Mono',monospace;font-size:1.3rem;
+outline:none;transition:border-color .2s,box-shadow .2s;text-transform:uppercase;
+}
+.resp-input:focus{border-color:var(--dorado);box-shadow:0 0 0 3px rgba(245,166,35,.15)}
+.btn-row{display:flex;gap:12px;margin-bottom:16px}
+.feedback{
+display:none;border-radius:13px;padding:18px 20px;
+align-items:flex-start;gap:14px;margin-top:4px;
+}
+.feedback.show{display:flex}
+.feedback.ok{background:rgba(0,132,61,.2);border:1.5px solid var(--verde);color:#80ffb0}
+.feedback.fail{background:rgba(200,16,46,.2);border:1.5px solid var(--rojo);color:#ffb3b3}
+.feedback .fi{font-size:1.6rem;flex-shrink:0;margin-top:2px}
+.feedback .ft strong{display:block;font-size:1.08rem;margin-bottom:4px}
+.feedback .ft span{font-family:'Share Tech Mono',monospace;font-size:.92rem;opacity:.9}
+#historial{margin-top:36px;display:none}
+#historial h3{
+font-family:'Bebas Neue',sans-serif;font-size:1.6rem;
+letter-spacing:3px;color:var(--dorado);margin-bottom:14px;
+}
+.export-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto;border-radius:11px;border:1px solid rgba(245,166,35,.15)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead tr{background:rgba(245,166,35,.12)}
+th{
+padding:11px 13px;text-align:left;
+font-family:'Bebas Neue',sans-serif;font-size:.92rem;
+letter-spacing:1.5px;color:var(--dorado);
+border-bottom:1px solid rgba(245,166,35,.25);white-space:nowrap;
+}
+td{
+padding:10px 13px;border-bottom:1px solid rgba(255,255,255,.06);
+color:rgba(247,247,247,.82);vertical-align:middle;
+}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.04)}
+.tag-si{color:#80ffb0;font-weight:700}.tag-no{color:#ffb3b3;font-weight:700}
+.mono{font-family:'Share Tech Mono',monospace;font-size:.82rem}
+#fin{display:none;text-align:center}
+.trofeo-big{font-size:5.5rem;display:inline-block;animation:bounce 1.5s ease-in-out infinite}
+#fin h2{
+font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,6vw,3rem);
+letter-spacing:4px;color:var(--dorado);margin:14px 0 8px;
+}
+#fin .fin-sub{color:rgba(247,247,247,.65);margin-bottom:28px;font-size:1.1rem}
+.final-scores{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:28px}
+.fs-box{
+background:rgba(22,22,38,.9);border:1px solid rgba(245,166,35,.28);
+border-radius:14px;padding:20px 32px;min-width:110px;
+}
+.fs-box .fn{font-family:'Bebas Neue',sans-serif;font-size:3.2rem;line-height:1}
+.fs-box .fl{font-size:.78rem;letter-spacing:1.5px;opacity:.55;text-transform:uppercase;margin-top:4px}
+.fsc .fn{color:var(--verde)}.fsi .fn{color:var(--rojo)}
+.fin-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+@media(max-width:500px){
+.panel{padding:20px 14px}
+.btn-row{flex-direction:column}
+.score-badge{min-width:65px}
+.score-badge .val{font-size:1.7rem}
+header h1{letter-spacing:3px}
+#volumeSlider{display:none}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti-canvas"></canvas>
+<div class="hex-bg">
+<span></span><span></span><span></span><span></span>
+<span></span><span></span><span></span><span></span>
+</div>
+
+<!-- MUSIC CONTROLS -->
+<div id="musicLabel">🎵 Música del Mundial</div>
+<input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="0.35">
+<button id="musicBtn" title="Música de fondo" onclick="toggleMusic()">🎵</button>
+
+<div class="wrap">
+  <header>
+    <div class="trophy">🏆</div>
+    <h1>Mundial 2026</h1>
+    <p class="sub">Conversiones Numéricas · Reto Académico</p>
+    <div class="flags">🇲🇽 🇺🇸 🇨🇦</div>
+  </header>
+
+  <div id="registro" class="panel">
+    <h2>⚽ Registro del Jugador</h2>
+    <p class="desc">Ingresa tu nombre completo para entrar al campo. ¡Demuestra que mereces la copa!</p>
+    <label class="field-label" for="nombreInput">Nombre completo del alumno</label>
+    <input class="text-input" type="text" id="nombreInput"
+      placeholder="Ej. Lionel Andrés García López" maxlength="80" autocomplete="name">
+    <button class="btn btn-primary" onclick="iniciarJuego()">⚽ ENTRAR AL CAMPO</button>
+  </div>
+
+  <div id="juego">
+    <div class="student-bar">
+      <span>👤</span>
+      <span>Jugador: <strong id="nombreMostrado"></strong></span>
+    </div>
+    <div class="score-row">
+      <div class="score-badge sb-tot">
+        <div class="val" id="sc-tot">0</div><div class="lbl">Intentos</div>
+      </div>
+      <div class="score-badge sb-ok">
+        <div class="val" id="sc-ok">0</div><div class="lbl">Correctas</div>
+      </div>
+      <div class="score-badge sb-no">
+        <div class="val" id="sc-no">0</div><div class="lbl">Incorrectas</div>
+      </div>
+      <div class="score-badge sb-rest">
+        <div class="val" id="sc-rest">29</div><div class="lbl">Restantes</div>
+      </div>
+    </div>
+    <div class="panel" id="problemaPanel">
+      <div class="bloque-tag" id="bloqueTag">Bloque</div>
+      <div class="problema-card">
+        <div class="prob-num" id="probNum">Problema #</div>
+        <div class="prob-txt" id="probTxt"></div>
+      </div>
+      <div class="resp-wrap">
+        <label for="respInput">Tu respuesta</label>
+        <input class="resp-input" type="text" id="respInput"
+          placeholder="Escribe aquí tu resultado…" autocomplete="off">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="verificar()">✅ VERIFICAR</button>
+        <button class="btn btn-next" id="btnSig" onclick="siguiente()" disabled>➡ SIGUIENTE</button>
+      </div>
+      <div class="feedback" id="feedback">
+        <span class="fi" id="fbIco"></span>
+        <div class="ft">
+          <strong id="fbTitle"></strong>
+          <span id="fbDetail"></span>
+        </div>
+      </div>
+    </div>
+
+    <div id="historial">
+      <h3>📋 Registro de Respuestas</h3>
+      <div class="export-row">
+        <button class="btn btn-export" onclick="exportCSV()">📥 Exportar CSV → Google Sheets</button>
+        <button class="btn btn-clear" onclick="limpiar()">🗑 Limpiar historial</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Alumno</th><th>Prob.</th><th>Problema</th>
+              <th>Su Resp.</th><th>Correcta</th><th>Resultado</th><th>Hora</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="fin" class="panel">
+    <div class="trofeo-big">🏆</div>
+    <h2>¡PARTIDO TERMINADO!</h2>
+    <p class="fin-sub" id="finSub"></p>
+    <div class="final-scores">
+      <div class="fs-box fsc">
+        <div class="fn" id="finOk">0</div><div class="fl">Correctas</div>
+      </div>
+      <div class="fs-box fsi">
+        <div class="fn" id="finNo">0</div><div class="fl">Incorrectas</div>
+      </div>
+    </div>
+    <div class="fin-btns">
+      <button class="btn btn-restart" onclick="reiniciar()">🔄 NUEVO PARTIDO</button>
+      <button class="btn btn-export" onclick="exportCSV()">📥 Exportar CSV</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── PROBLEMAS ───────────────────────────────────────────────────────────────
+const P = [
+  {id:1, bloque:'Bloque 1 · Decimal → Hexadecimal', txt:'45₁₀ → Hexadecimal', ok:['2D']},
+  {id:2, bloque:'Bloque 1 · Decimal → Hexadecimal', txt:'189₁₀ → Hexadecimal', ok:['BD']},
+  {id:3, bloque:'Bloque 1 · Decimal → Hexadecimal', txt:'256₁₀ → Hexadecimal', ok:['100']},
+  {id:4, bloque:'Bloque 1 · Decimal → Hexadecimal', txt:'1023₁₀ → Hexadecimal', ok:['3FF']},
+  {id:5, bloque:'Bloque 1 · Decimal → Hexadecimal', txt:'4094₁₀ → Hexadecimal', ok:['FFE']},
+  {id:6, bloque:'Bloque 2 · Hexadecimal → Decimal', txt:'2F₁₆ → Decimal', ok:['47']},
+  {id:7, bloque:'Bloque 2 · Hexadecimal → Decimal', txt:'A5₁₆ → Decimal', ok:['165']},
+  {id:8, bloque:'Bloque 2 · Hexadecimal → Decimal', txt:'10C₁₆ → Decimal', ok:['268']},
+  {id:9, bloque:'Bloque 2 · Hexadecimal → Decimal', txt:'7B2₁₆ → Decimal', ok:['1970']},
+  {id:10, bloque:'Bloque 2 · Hexadecimal → Decimal', txt:'FFF₁₆ → Decimal', ok:['4095']},
+  {id:11, bloque:'Bloque 3 · Binario → Decimal', txt:'1011₂ → Decimal', ok:['11']},
+  {id:12, bloque:'Bloque 3 · Binario → Decimal', txt:'11010₂ → Decimal', ok:['26']},
+  {id:13, bloque:'Bloque 3 · Binario → Decimal', txt:'100111₂ → Decimal', ok:['39']},
+  {id:14, bloque:'Bloque 3 · Binario → Decimal', txt:'11110001₂ → Decimal', ok:['241']},
+  {id:15, bloque:'Bloque 3 · Binario → Decimal', txt:'10101010₂ → Decimal', ok:['170']},
+  {id:16, bloque:'Bloque 4 · Decimal → Binario', txt:'23₁₀ → Binario', ok:['10111']},
+  {id:17, bloque:'Bloque 4 · Decimal → Binario', txt:'64₁₀ → Binario', ok:['1000000']},
+  {id:18, bloque:'Bloque 4 · Decimal → Binario', txt:'117₁₀ → Binario', ok:['1110101']},
+  {id:19, bloque:'Bloque 4 · Decimal → Binario', txt:'240₁₀ → Binario', ok:['11110000']},
+  {id:20, bloque:'Bloque 5 · Binario → Hexadecimal', txt:'1110₂ → Hexadecimal',ok:['E']},
+  {id:21, bloque:'Bloque 5 · Binario → Hexadecimal', txt:'101101₂ → Hexadecimal',ok:['2D']},
+  {id:22, bloque:'Bloque 5 · Binario → Hexadecimal', txt:'11001110₂ → Hexadecimal',ok:['CE']},
+  {id:23, bloque:'Bloque 5 · Binario → Hexadecimal', txt:'1010111100₂ → Hexadecimal',ok:['2BC']},
+  {id:24, bloque:'Bloque 5 · Binario → Hexadecimal', txt:'111111110110₂ → Hexadecimal',ok:['FF6']},
+  {id:25, bloque:'Bloque 6 · Hexadecimal → Binario', txt:'3B₁₆ → Binario', ok:['00111011','111011']},
+  {id:26, bloque:'Bloque 6 · Hexadecimal → Binario', txt:'8E₁₆ → Binario', ok:['10001110']},
+  {id:27, bloque:'Bloque 6 · Hexadecimal → Binario', txt:'1A7₁₆ → Binario', ok:['000110100111','110100111','0001 1010 0111','0001 10100111']},
+  {id:28, bloque:'Bloque 6 · Hexadecimal → Binario', txt:'C0D₁₆ → Binario', ok:['110000001101','1100 0000 1101']},
+  {id:29, bloque:'Bloque 6 · Hexadecimal → Binario', txt:'F5A2₁₆ → Binario', ok:['1111010110100010','1111 0101 1010 0010']},
+];
+
+// ─── MUSIC ENGINE — MUNDIAL 2026 ─────────────────────────────────────────────
+// Estilo: himno épico de estadio con trompetas, cuerdas, tambores de guerra y vuvuzela
+let AC, masterGain, reverbNode, musicPlaying = false, musicTimeout = null;
+let musicPhase = 0, phraseIndex = 0;
+
+const BPM = 132; // energía de partido grande
+const BEAT = 60 / BPM;
+const BAR  = BEAT * 4;
+
+function getAC() {
+  if (!AC) {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = AC.createGain();
+    masterGain.gain.value = parseFloat(document.getElementById('volumeSlider').value);
+
+    // Reverb convolution simulado con delay nodes (ambiente estadio)
+    const delay1 = AC.createDelay(0.5); delay1.delayTime.value = 0.07;
+    const delay2 = AC.createDelay(0.5); delay2.delayTime.value = 0.13;
+    const fbGain1 = AC.createGain(); fbGain1.gain.value = 0.22;
+    const fbGain2 = AC.createGain(); fbGain2.gain.value = 0.15;
+    const wetGain = AC.createGain(); wetGain.gain.value = 0.38;
+
+    masterGain.connect(delay1);
+    masterGain.connect(delay2);
+    delay1.connect(fbGain1); fbGain1.connect(delay1);
+    delay2.connect(fbGain2); fbGain2.connect(delay2);
+    delay1.connect(wetGain); delay2.connect(wetGain);
+    wetGain.connect(AC.destination);
+    masterGain.connect(AC.destination);
+  }
+  return AC;
+}
+
+// ── Notas en Hz (escala épica en Do mayor / La menor) ──
+const C4=261.6, D4=293.7, E4=329.6, F4=349.2, G4=392, A4=440, B4=493.9;
+const C5=523.3, D5=587.3, E5=659.3, F5=698.5, G5=784, A5=880, B5=987.8, C6=1046.5;
+const G3=196, A3=220, C3=130.8, F3=174.6, E3=164.8;
+
+// ── Frases del himno épico (4 secciones que rotan) ──
+const PHRASES = [
+  // FRASE 1 — Fanfarria de apertura (tipo himno olímpico)
+  [
+    [G4,1.5],[G4,0.5],[A4,1],[G4,1],[C5,2],
+    [G4,1.5],[G4,0.5],[A4,1],[G4,1],[D5,2],
+    [G4,1.5],[G4,0.5],[G5,1.5],[E5,1],[D5,0.5],[C5,2],
+    [E5,1],[D5,1],[C5,1],[G4,1],[C5,3],
+  ],
+  // FRASE 2 — Tensión y escalada dramática
+  [
+    [C5,1],[D5,1],[E5,1],[F5,1],[G5,2],[G5,2],
+    [A5,1],[G5,1],[F5,1],[E5,1],[D5,2],[C5,2],
+    [E5,1.5],[E5,0.5],[F5,1],[E5,1],[D5,1],[C5,1],[D5,2],
+    [C5,0.5],[D5,0.5],[E5,0.5],[F5,0.5],[G5,3],[G5,1],
+  ],
+  // FRASE 3 — Clímax épico (coral de estadio)
+  [
+    [G5,1],[G5,1],[A5,1],[G5,1],[F5,2],[E5,2],
+    [D5,1],[E5,1],[F5,1],[G5,1],[A5,2],[A5,2],
+    [G5,1.5],[F5,0.5],[E5,1],[D5,1],[C5,1],[B4,1],[C5,2],
+    [G4,1],[A4,1],[C5,1],[E5,1],[G5,4],
+  ],
+  // FRASE 4 — Celebración / final con swing latino
+  [
+    [C5,0.5],[E5,0.5],[G5,1],[E5,1],[C5,0.5],[D5,0.5],[E5,2],
+    [F5,0.5],[A5,0.5],[G5,1],[F5,0.5],[E5,0.5],[D5,0.5],[C5,1.5],
+    [G4,0.5],[A4,0.5],[C5,1],[E5,0.5],[G5,0.5],[A5,1],[G5,1],[E5,1],
+    [D5,1],[E5,1],[G5,1],[E5,1],[C5,4],
+  ],
+];
+
+// ── Línea de bajo por frase ──
+const BASS_LINES = [
+  [[C3,2],[G3,2],[F3,2],[G3,2]],
+  [[A3,2],[E3,2],[F3,2],[G3,2]],
+  [[C3,2],[F3,2],[G3,2],[C3,2]],
+  [[C3,1],[E3,1],[F3,2],[G3,2],[C3,2]],
+];
+
+// ── Función de nota con envolvente ──
+function playNote(freq, dur, t, vol, type, detune) {
+  const ac = getAC();
+  const osc = ac.createOscillator();
+  const gn  = ac.createGain();
+  osc.connect(gn); gn.connect(masterGain);
+  osc.type = type || 'sawtooth';
+  osc.frequency.setValueAtTime(freq, t);
+  if (detune) osc.detune.setValueAtTime(detune, t);
+  const atk = Math.min(0.04, dur * 0.1);
+  const rel = Math.min(0.18, dur * 0.35);
+  gn.gain.setValueAtTime(0.0001, t);
+  gn.gain.linearRampToValueAtTime(vol, t + atk);
+  gn.gain.setValueAtTime(vol, t + dur * BEAT - rel);
+  gn.gain.exponentialRampToValueAtTime(0.0001, t + dur * BEAT);
+  osc.start(t); osc.stop(t + dur * BEAT + 0.05);
+}
+
+// ── Trompeta (sawtooth + filtro brillante) ──
+function playTrumpet(freq, dur, t, vol) {
+  const ac = getAC();
+  const osc  = ac.createOscillator();
+  const osc2 = ac.createOscillator(); // octava arriba suave
+  const filt = ac.createBiquadFilter();
+  const gn   = ac.createGain();
+  filt.type = 'bandpass'; filt.frequency.value = freq * 3; filt.Q.value = 1.2;
+  osc.connect(filt); osc2.connect(filt); filt.connect(gn); gn.connect(masterGain);
+  osc.type = 'sawtooth'; osc.frequency.setValueAtTime(freq, t);
+  osc2.type = 'sawtooth'; osc2.frequency.setValueAtTime(freq * 2, t); osc2.detune.value = 7;
+  const atk = 0.03, rel = Math.min(0.2, dur * BEAT * 0.3);
+  gn.gain.setValueAtTime(0.0001, t);
+  gn.gain.linearRampToValueAtTime(vol, t + atk);
+  gn.gain.setValueAtTime(vol * 0.85, t + dur * BEAT - rel);
+  gn.gain.exponentialRampToValueAtTime(0.0001, t + dur * BEAT);
+  osc.start(t); osc2.start(t); osc.stop(t + dur * BEAT + 0.05); osc2.stop(t + dur * BEAT + 0.05);
+}
+
+// ── Cuerdas (chord pad suave) ──
+function playStrings(freqs, dur, t, vol) {
+  freqs.forEach((f, i) => {
+    const ac = getAC();
+    const osc = ac.createOscillator();
+    const gn  = ac.createGain();
+    osc.connect(gn); gn.connect(masterGain);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(f, t);
+    osc.detune.value = (i - 1) * 4;
+    gn.gain.setValueAtTime(0.0001, t);
+    gn.gain.linearRampToValueAtTime(vol / freqs.length, t + 0.12);
+    gn.gain.setValueAtTime(vol / freqs.length, t + dur * BEAT - 0.18);
+    gn.gain.exponentialRampToValueAtTime(0.0001, t + dur * BEAT);
+    osc.start(t); osc.stop(t + dur * BEAT + 0.05);
+  });
+}
+
+// ── Bombo de estadio ──
+function playKick(t, vol) {
+  const ac = getAC();
+  const osc = ac.createOscillator(); const gn = ac.createGain();
+  osc.connect(gn); gn.connect(masterGain);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(220, t);
+  osc.frequency.exponentialRampToValueAtTime(35, t + 0.18);
+  gn.gain.setValueAtTime(vol || 0.7, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+  osc.start(t); osc.stop(t + 0.32);
+}
+
+// ── Caja / snare ──
+function playSnare(t) {
+  const ac = getAC();
+  const bufSize = Math.floor(ac.sampleRate * 0.12);
+  const buf = ac.createBuffer(1, bufSize, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.25));
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const filt = ac.createBiquadFilter(); filt.type = 'bandpass'; filt.frequency.value = 1800; filt.Q.value = 0.8;
+  const gn = ac.createGain(); gn.gain.value = 0.28;
+  src.connect(filt); filt.connect(gn); gn.connect(masterGain);
+  src.start(t); src.stop(t + 0.14);
+}
+
+// ── Platillo crash ──
+function playCrash(t) {
+  const ac = getAC();
+  const bufSize = Math.floor(ac.sampleRate * 0.5);
+  const buf = ac.createBuffer(1, bufSize, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufSize * 0.18));
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const filt = ac.createBiquadFilter(); filt.type = 'highpass'; filt.frequency.value = 5000;
+  const gn = ac.createGain(); gn.gain.value = 0.12;
+  src.connect(filt); filt.connect(gn); gn.connect(masterGain);
+  src.start(t); src.stop(t + 0.55);
+}
+
+// ── Tambor de guerra (bombo sordo repetitivo estilo estadio) ──
+function playWarDrum(t) {
+  const ac = getAC();
+  const osc = ac.createOscillator(); const gn = ac.createGain();
+  osc.connect(gn); gn.connect(masterGain);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(80, t);
+  osc.frequency.exponentialRampToValueAtTime(55, t + 0.1);
+  gn.gain.setValueAtTime(0.45, t);
+  gn.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+  osc.start(t); osc.stop(t + 0.24);
+}
+
+// ── Hi-hat ──
+function playHihat(t, open) {
+  const ac = getAC();
+  const bufSize = Math.floor(ac.sampleRate * 0.04);
+  const buf = ac.createBuffer(1, bufSize, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) d[i] = Math.random() * 2 - 1;
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const filt = ac.createBiquadFilter(); filt.type = 'highpass'; filt.frequency.value = open ? 8000 : 11000;
+  const gn = ac.createGain(); gn.gain.value = open ? 0.06 : 0.03;
+  src.connect(filt); filt.connect(gn); gn.connect(masterGain);
+  src.start(t); src.stop(t + 0.05);
+}
+
+// ── Acordes de cuerdas por compás ──
+const CHORD_PROG = [
+  [C4,E4,G4],   // C maj
+  [F3,A3,C4],   // F maj
+  [G3,B4,D4],   // G maj
+  [A3,C4,E4],   // A min
+];
+
+// ── Programador principal ──
+function scheduleMusic() {
+  if (!musicPlaying) return;
+  const ac = getAC();
+  const now = ac.currentTime;
+
+  const phrase = PHRASES[phraseIndex % PHRASES.length];
+  const bassLine = BASS_LINES[phraseIndex % BASS_LINES.length];
+
+  // ── BATERÍA (4 compases) ──
+  for (let bar = 0; bar < 4; bar++) {
+    const bt = now + bar * BAR;
+    // Bombo: beats 1 y 3
+    playKick(bt);
+    playKick(bt + BEAT * 2);
+    // Snare: beats 2 y 4
+    playSnare(bt + BEAT);
+    playSnare(bt + BEAT * 3);
+    // Tambores de guerra extra en beat 1 de cada compás
+    playWarDrum(bt + BEAT * 0.5);
+    playWarDrum(bt + BEAT * 2.5);
+    // Hi-hats en subdivisión
+    for (let h = 0; h < 8; h++) playHihat(bt + h * BEAT * 0.5, h % 2 === 0);
+    // Crash en primer compás de cada frase
+    if (bar === 0) playCrash(bt);
+  }
+
+  // ── BAJO ──
+  let bassT = now;
+  bassLine.forEach(([f, d]) => {
+    playNote(f, d, bassT, 0.28, 'triangle');
+    playNote(f * 2, d, bassT, 0.1, 'triangle');
+    bassT += d * BEAT;
+  });
+  // Repetir bajo 4 veces para llenar los 4 compases
+  for (let r = 1; r < 4; r++) {
+    bassLine.forEach(([f, d]) => {
+      playNote(f, d, bassT, 0.28, 'triangle');
+      bassT += d * BEAT;
+    });
+  }
+
+  // ── CUERDAS (acordes por compás) ──
+  for (let bar = 0; bar < 4; bar++) {
+    const chord = CHORD_PROG[bar % CHORD_PROG.length];
+    playStrings(chord, 3.8, now + bar * BAR, 0.14);
+    // Quinta arriba
+    playStrings([chord[0]*2, chord[1]*2], 3.8, now + bar * BAR, 0.06);
+  }
+
+  // ── TROMPETA (melodía principal) ──
+  let melT = now;
+  phrase.forEach(([f, d]) => {
+    playTrumpet(f, d, melT, 0.32);
+    // Armonía en tercera menor/mayor
+    const third = f * 1.2; // aprox tercera menor temperada
+    playTrumpet(third, d, melT, 0.1);
+    melT += d * BEAT;
+  });
+
+  phraseIndex++;
+  const phraseDur = phrase.reduce((s,[,d]) => s + d * BEAT, 0);
+  musicTimeout = setTimeout(scheduleMusic, (phraseDur - 0.3) * 1000);
+}
+
+function toggleMusic() {
+  const btn = document.getElementById('musicBtn');
+  const lbl = document.getElementById('musicLabel');
+  const vol = document.getElementById('volumeSlider');
+  getAC();
+  if (AC.state === 'suspended') AC.resume();
+
+  if (!musicPlaying) {
+    musicPlaying = true;
+    btn.classList.add('playing');
+    btn.textContent = '🔊';
+    lbl.textContent = '🎵 Música del Mundial';
+    lbl.classList.add('show');
+    vol.classList.add('show');
+    scheduleMusic();
+    setTimeout(() => lbl.classList.remove('show'), 2500);
+  } else {
+    musicPlaying = false;
+    clearTimeout(musicTimeout);
+    btn.classList.remove('playing');
+    btn.textContent = '🎵';
+    lbl.textContent = '🔇 Música pausada';
+    lbl.classList.add('show');
+    vol.classList.remove('show');
+    setTimeout(() => lbl.classList.remove('show'), 1800);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('volumeSlider').addEventListener('input', function() {
+    if (masterGain) masterGain.gain.setValueAtTime(parseFloat(this.value), getAC().currentTime);
+  });
+});
+
+// ─── SFX (short tones for game events) ────────────────────────────────────────
+function tone(freq, type, dur, vol, delay) {
+  const ac = getAC();
+  if (ac.state === 'suspended') ac.resume();
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.connect(g); g.connect(masterGain || ac.destination);
+  o.type = type; o.frequency.setValueAtTime(freq, ac.currentTime + delay);
+  g.gain.setValueAtTime(vol, ac.currentTime + delay);
+  g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + delay + dur);
+  o.start(ac.currentTime + delay); o.stop(ac.currentTime + delay + dur);
+}
+
+function sndProblema() {
+  [[523, 0],[659, .1],[784, .2],[1047, .32]].forEach(([f, d]) => tone(f, 'square', .2, .18, d));
+}
+
+function sndCorrecto() {
+  [[523, 0],[659, .13],[784, .26],[1047, .4],[1319, .58]].forEach(([f, d]) => tone(f, 'sine', .22, .28, d));
+  tone(1047, 'sine', .08, .2, .42);
+  setTimeout(confetti, 80);
+}
+
+function sndIncorrecto() {
+  tone(320, 'sawtooth', .09, .35, 0);
+  tone(290, 'sawtooth', .09, .35, .1);
+  tone(250, 'sawtooth', .25, .28, .2);
+}
+
+// ─── CONFETTI ────────────────────────────────────────────────────────────────
+function confetti() {
+  const cv = document.getElementById('confetti-canvas');
+  const ctx = cv.getContext('2d');
+  cv.width = window.innerWidth; cv.height = window.innerHeight;
+  const cols = ['#C8102E','#003DA5','#F5A623','#00843D','#ffffff','#FFD700'];
+  const pp = Array.from({length:160}, () => ({
+    x: Math.random() * cv.width, y: Math.random() * -cv.height * .6,
+    vx: (Math.random() - .5) * 5, vy: Math.random() * 3.5 + 1.5,
+    c: cols[Math.floor(Math.random() * cols.length)],
+    s: Math.random() * 9 + 3, r: Math.random() * 360, vr: (Math.random() - .5) * 10
+  }));
+  let raf;
+  function draw() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    pp.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r * Math.PI / 180);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.s/2, -p.s/4, p.s, p.s/2);
+      ctx.restore();
+    });
+    if (pp.some(p => p.y < cv.height)) raf = requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, cv.width, cv.height);
+  }
+  draw();
+  setTimeout(() => { cancelAnimationFrame(raf); ctx.clearRect(0, 0, cv.width, cv.height); }, 4500);
+}
+
+// ─── ESTADO ──────────────────────────────────────────────────────────────────
+let alumno = '', cola = [], actual = null, respondido = false;
+let tot = 0, ok = 0, no = 0;
+let hist = JSON.parse(localStorage.getItem('wc26') || '[]');
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function iniciarJuego() {
+  const v = document.getElementById('nombreInput').value.trim();
+  if (!v || v.length < 3) {
+    const el = document.getElementById('nombreInput');
+    el.style.borderColor = 'var(--rojo)'; el.focus();
+    setTimeout(() => el.style.borderColor = '', 1600); return;
+  }
+  alumno = v; cola = shuffle([...Array(29).keys()]);
+  tot = 0; ok = 0; no = 0;
+  document.getElementById('nombreMostrado').textContent = alumno;
+  document.getElementById('registro').style.display = 'none';
+  document.getElementById('juego').style.display = 'block';
+  scores(); cargar(); renderTabla();
+  document.getElementById('historial').style.display = 'block';
+  // Auto-start music on game start (needs user gesture)
+  if (!musicPlaying) toggleMusic();
+}
+
+function cargar() {
+  if (!cola.length) { fin(); return; }
+  actual = P[cola.shift()]; respondido = false;
+  document.getElementById('bloqueTag').textContent = actual.bloque;
+  document.getElementById('probNum').textContent = `Problema #${actual.id} de 29`;
+  document.getElementById('probTxt').textContent = actual.txt;
+  document.getElementById('respInput').value = '';
+  document.getElementById('respInput').disabled = false;
+  document.getElementById('respInput').focus();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  document.getElementById('btnSig').disabled = true;
+  sndProblema();
+}
+
+function verificar() {
+  if (respondido) return;
+  const r = document.getElementById('respInput').value.trim().toUpperCase().replace(/\s+/g, '');
+  if (!r) return;
+  respondido = true; tot++;
+  document.getElementById('respInput').disabled = true;
+  document.getElementById('btnSig').disabled = false;
+  const lista = actual.ok.map(x => x.toUpperCase().replace(/\s+/g, ''));
+  const bien = lista.includes(r);
+  if (bien) { ok++; sndCorrecto(); } else { no++; sndIncorrecto(); }
+  scores();
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (bien ? 'ok' : 'fail');
+  document.getElementById('fbIco').textContent = bien ? '⚽' : '🟥';
+  document.getElementById('fbTitle').textContent = bien ? '¡GOL! Respuesta Correcta' : 'Tarjeta Roja — Incorrecta';
+  document.getElementById('fbDetail').textContent = bien
+    ? `¡Sigue así, campeón!`
+    : `Tu respuesta: ${r} — Inténtalo en la siguiente oportunidad.`;
+  const ts = new Date().toLocaleTimeString('es-MX');
+  hist.push({ alumno, num: actual.id, txt: actual.txt, tipo: actual.bloque.split('·')[1]?.trim() || '',
+    resp: r, correcta: actual.ok[0], resultado: bien ? 'SÍ' : 'NO', hora: ts });
+  localStorage.setItem('wc26', JSON.stringify(hist));
+  renderTabla();
+}
+
+function siguiente() { if (!respondido) return; if (!cola.length) { fin(); return; } cargar(); }
+
+function scores() {
+  document.getElementById('sc-tot').textContent = tot;
+  document.getElementById('sc-ok').textContent = ok;
+  document.getElementById('sc-no').textContent = no;
+  document.getElementById('sc-rest').textContent = cola.length;
+}
+
+function fin() {
+  document.getElementById('problemaPanel').style.display = 'none';
+  document.getElementById('fin').style.display = 'block';
+  document.getElementById('finSub').textContent = `¡Felicidades, ${alumno}! Completaste los 29 problemas.`;
+  document.getElementById('finOk').textContent = ok;
+  document.getElementById('finNo').textContent = no;
+  sndCorrecto();
+}
+
+function reiniciar() {
+  document.getElementById('fin').style.display = 'none';
+  document.getElementById('problemaPanel').style.display = 'block';
+  document.getElementById('registro').style.display = 'block';
+  document.getElementById('juego').style.display = 'none';
+  document.getElementById('nombreInput').value = '';
+}
+
+function renderTabla() {
+  const tb = document.getElementById('tbody'); tb.innerHTML = '';
+  [...hist].reverse().forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${hist.length - i}</td>
+      <td>${r.alumno}</td>
+      <td style="text-align:center">${r.num}</td>
+      <td class="mono">${r.txt}</td>
+      <td class="mono">${r.resp}</td>
+      <td class="mono">${r.correcta}</td>
+      <td class="${r.resultado === 'SÍ' ? 'tag-si' : 'tag-no'}">${r.resultado === 'SÍ' ? '✅ SÍ' : '❌ NO'}</td>
+      <td>${r.hora}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function exportCSV() {
+  if (!hist.length) { alert('No hay registros aún.'); return; }
+  const e = v => `"${String(v).replace(/"/g, '""')}"`;
+  const hdr = ['#','Alumno','Prob#','Problema','Tipo','Su Respuesta','Respuesta Correcta','Resultado','Hora'];
+  const rows = hist.map((r, i) =>
+    [i+1, r.alumno, r.num, r.txt, r.tipo, r.resp, r.correcta, r.resultado, r.hora].map(e).join(','));
+  const csv = [hdr.join(','), ...rows].join('\r\n');
+  const blob = new Blob(['\uFEFF' + csv], {type: 'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `mundial2026_${Date.now()}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function limpiar() {
+  if (!confirm('¿Borrar todo el historial?')) return;
+  hist = []; localStorage.removeItem('wc26'); renderTabla();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('nombreInput').addEventListener('keydown', e => { if (e.key === 'Enter') iniciarJuego(); });
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('juego').style.display === 'none') return;
+    if (e.key === 'Enter') { if (!respondido) verificar(); else if (!document.getElementById('btnSig').disabled) siguiente(); }
+  });
+  renderTabla();
+  if (hist.length) document.getElementById('historial').style.display = 'block';
+});
+</script>
+</body>
+</html>
