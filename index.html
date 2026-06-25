@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚽ Mundial 2026 – Conversiones Numéricas</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo:    #C8102E;
+    --azul:    #003DA5;
+    --dorado:  #F5A623;
+    --verde:   #00843D;
+    --blanco:  #F7F7F7;
+    --negro:   #0A0A0A;
+    --gris:    #1C1C2E;
+    --gris2:   #2A2A3E;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--negro);
+    color: var(--blanco);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── FONDO ANIMADO ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse at 20% 30%, rgba(0,61,165,.35) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 70%, rgba(200,16,46,.3) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(0,132,61,.15) 0%, transparent 70%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse {
+    from { opacity: .7; }
+    to   { opacity: 1;  }
+  }
+
+  /* ── HEXÁGONOS DECORATIVOS ── */
+  .hex-bg {
+    position: fixed; inset: 0; z-index: 0;
+    overflow: hidden; pointer-events: none;
+  }
+  .hex-bg span {
+    position: absolute;
+    width: 60px; height: 60px;
+    background: rgba(245,166,35,.05);
+    clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+    animation: hexFloat 12s linear infinite;
+  }
+  .hex-bg span:nth-child(2)  { left:10%;  animation-delay:-2s;  width:40px; height:40px; background:rgba(200,16,46,.07); }
+  .hex-bg span:nth-child(3)  { left:25%;  animation-delay:-4s;  width:80px; height:80px; background:rgba(0,61,165,.06);  }
+  .hex-bg span:nth-child(4)  { left:40%;  animation-delay:-1s;  }
+  .hex-bg span:nth-child(5)  { left:55%;  animation-delay:-7s;  width:50px; height:50px; }
+  .hex-bg span:nth-child(6)  { left:70%;  animation-delay:-3s;  width:70px; height:70px; background:rgba(0,132,61,.08); }
+  .hex-bg span:nth-child(7)  { left:85%;  animation-delay:-9s;  }
+  .hex-bg span:nth-child(8)  { left:5%;   animation-delay:-6s;  width:35px; height:35px; }
+  .hex-bg span:nth-child(9)  { left:92%;  animation-delay:-11s; width:45px; height:45px; }
+  .hex-bg span:nth-child(10) { left:50%;  animation-delay:-5s;  width:90px; height:90px; background:rgba(245,166,35,.04); }
+  @keyframes hexFloat {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity:0; }
+    10%  { opacity:1; }
+    90%  { opacity:1; }
+    100% { transform: translateY(-10vh) rotate(180deg); opacity:0; }
+  }
+
+  /* ── WRAPPER ── */
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: 32px 0 24px;
+    border-bottom: 2px solid rgba(245,166,35,.3);
+    margin-bottom: 32px;
+  }
+  .trophy { font-size: 3.5rem; animation: bounce 2s infinite; display:inline-block; }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+  header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.2rem, 7vw, 4rem);
+    letter-spacing: 4px;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--dorado) 0%, #fff 50%, var(--dorado) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 8px 0 4px;
+  }
+  header p {
+    color: rgba(247,247,247,.6);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .flags { font-size: 1.6rem; letter-spacing: 4px; margin-top: 8px; }
+
+  /* ── PANEL BASE ── */
+  .panel {
+    background: rgba(28,28,46,.85);
+    border: 1px solid rgba(245,166,35,.2);
+    border-radius: 16px;
+    padding: 32px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  }
+
+  /* ── REGISTRO ── */
+  #registro h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    color: var(--dorado);
+    margin-bottom: 8px;
+  }
+  #registro p { color: rgba(247,247,247,.7); margin-bottom: 20px; font-size: 1.05rem; }
+
+  .input-wrap { position: relative; }
+  .input-wrap input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(10,10,10,.6);
+    border: 2px solid rgba(245,166,35,.3);
+    border-radius: 10px;
+    color: var(--blanco);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .input-wrap input:focus { border-color: var(--dorado); }
+  .input-wrap input::placeholder { color: rgba(247,247,247,.35); }
+
+  /* ── BOTONES ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn:hover  { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.4); }
+  .btn:active { transform: translateY(0); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--dorado), #e8900a);
+    color: var(--negro);
+    width: 100%;
+    justify-content: center;
+    margin-top: 20px;
+    font-size: 1.3rem;
+  }
+  .btn-check {
+    background: linear-gradient(135deg, var(--azul), #0052cc);
+    color: #fff;
+    flex: 1;
+  }
+  .btn-next {
+    background: linear-gradient(135deg, var(--verde), #00612d);
+    color: #fff;
+    flex: 1;
+  }
+  .btn-export {
+    background: linear-gradient(135deg, #1f7a1f, #155a15);
+    color: #fff;
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+
+  /* ── PROBLEMA ── */
+  #juego { display: none; }
+
+  .student-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,61,165,.25);
+    border: 1px solid rgba(0,61,165,.5);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 24px;
+    font-size: 1rem;
+  }
+  .student-banner .avatar { font-size: 1.5rem; }
+  .student-banner strong { color: var(--dorado); }
+
+  .score-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .score-badge {
+    flex: 1;
+    min-width: 90px;
+    text-align: center;
+    background: rgba(10,10,10,.5);
+    border: 1px solid rgba(245,166,35,.2);
+    border-radius: 10px;
+    padding: 10px 8px;
+  }
+  .score-badge .val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .score-badge .lbl {
+    font-size: .75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(247,247,247,.55);
+    margin-top: 2px;
+  }
+  .score-badge.correctas .val { color: var(--verde); }
+  .score-badge.incorrectas .val { color: var(--rojo); }
+  .score-badge.total .val     { color: var(--dorado); }
+  .score-badge.restantes .val { color: #7ec8e3; }
+
+  .bloque-tag {
+    display: inline-block;
+    background: var(--rojo);
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+  }
+
+  .problema-card {
+    background: linear-gradient(135deg, rgba(0,61,165,.2), rgba(200,16,46,.1));
+    border: 2px solid rgba(245,166,35,.35);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .problema-card::before {
+    content: '⚽';
+    position: absolute;
+    right: 16px; top: 12px;
+    font-size: 2.5rem;
+    opacity: .12;
+  }
+  .problema-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    color: rgba(247,247,247,.45);
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+  .problema-texto {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--blanco);
+    line-height: 1.3;
+  }
+  .problema-texto .val-src { color: var(--dorado); font-weight: 700; }
+  .problema-texto .tipo    { color: rgba(247,247,247,.55); font-size: .85em; }
+
+  .respuesta-wrap { margin-bottom: 16px; }
+  .respuesta-wrap label {
+    display: block;
+    font-size: .9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(247,247,247,.55);
+    margin-bottom: 6px;
+  }
+  .respuesta-wrap input {
+    width: 100%;
+    padding: 13px 16px;
+    background: rgba(10,10,10,.7);
+    border: 2px solid rgba(245,166,35,.3);
+    border-radius: 10px;
+    color: var(--blanco);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.25rem;
+    outline: none;
+    transition: border-color .2s;
+    text-transform: uppercase;
+  }
+  .respuesta-wrap input:focus { border-color: var(--dorado); }
+
+  .btn-row { display: flex; gap: 12px; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    display: none;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .feedback.show { display: flex; }
+  .feedback.correcto {
+    background: rgba(0,132,61,.2);
+    border: 1.5px solid var(--verde);
+    color: #6fff9e;
+  }
+  .feedback.incorrecto {
+    background: rgba(200,16,46,.2);
+    border: 1.5px solid var(--rojo);
+    color: #ffb3b3;
+  }
+  .feedback .ico { font-size: 1.5rem; flex-shrink: 0; }
+  .feedback .txt strong { display:block; font-size:1.05rem; }
+  .feedback .txt span   { font-family:'Share Tech Mono',monospace; font-size:.95rem; opacity:.9; }
+
+  /* ── CONFETTI ── */
+  #confetti-canvas {
+    position: fixed; inset: 0; z-index: 999;
+    pointer-events: none;
+  }
+
+  /* ── TABLA HISTORIAL ── */
+  #historial { margin-top: 40px; display: none; }
+  #historial h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    color: var(--dorado);
+    margin-bottom: 12px;
+  }
+  .export-row { display:flex; gap:10px; align-items:center; margin-bottom:14px; flex-wrap:wrap; }
+  .table-wrap { overflow-x: auto; border-radius: 10px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9rem;
+  }
+  thead tr { background: rgba(245,166,35,.15); }
+  th {
+    padding: 10px 12px;
+    text-align: left;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: .95rem;
+    letter-spacing: 1.5px;
+    color: var(--dorado);
+    border-bottom: 1px solid rgba(245,166,35,.3);
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    color: rgba(247,247,247,.85);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+  }
+  tr:hover td { background: rgba(255,255,255,.04); }
+  .tag-ok  { color: #6fff9e; font-weight:700; }
+  .tag-no  { color: #ffb3b3; font-weight:700; }
+
+  /* ── FIN ── */
+  #fin { display: none; text-align: center; }
+  #fin .trofeo-big { font-size: 5rem; animation: bounce 1.5s infinite; display:inline-block; }
+  #fin h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 4px;
+    color: var(--dorado);
+    margin: 12px 0 6px;
+  }
+  #fin p { color: rgba(247,247,247,.7); margin-bottom: 24px; }
+  #fin .final-score {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px;
+  }
+  #fin .fs-box {
+    background: rgba(28,28,46,.9);
+    border: 1px solid rgba(245,166,35,.3);
+    border-radius: 12px;
+    padding: 16px 24px;
+    min-width: 100px;
+  }
+  #fin .fs-box .n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    line-height: 1;
+  }
+  #fin .fs-box.c .n { color: var(--verde); }
+  #fin .fs-box.i .n { color: var(--rojo); }
+  #fin .fs-box .l   { font-size: .8rem; letter-spacing: 1px; opacity:.6; text-transform:uppercase; }
+  #fin .btn-restart {
+    background: linear-gradient(135deg, var(--dorado), #e8900a);
+    color: var(--negro);
+    font-size: 1.2rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 480px) {
+    .panel { padding: 20px 16px; }
+    .btn-row { flex-direction: column; }
+    .score-row .score-badge { min-width: 70px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+<div class="hex-bg">
+  <span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header>
+    <div class="trophy">🏆</div>
+    <h1>Mundial 2026</h1>
+    <p>Conversiones Numéricas · Reto Académico</p>
+    <div class="flags">🇲🇽 🇺🇸 🇨🇦</div>
+  </header>
+
+  <!-- REGISTRO -->
+  <div id="registro" class="panel">
+    <h2>⚽ Registro del Jugador</h2>
+    <p>Ingresa tu nombre completo para comenzar el reto de conversiones. ¡Demuestra que eres campeón!</p>
+    <div class="input-wrap">
+      <input type="text" id="nombreInput" placeholder="Ej. Lionel Andrés García López" maxlength="80" autocomplete="name">
+    </div>
+    <button class="btn btn-primary" onclick="iniciarJuego()">
+      ⚽ ENTRAR AL CAMPO
+    </button>
+  </div>
+
+  <!-- JUEGO -->
+  <div id="juego">
+    <div class="student-banner">
+      <span class="avatar">👤</span>
+      <span>Jugador: <strong id="nombreMostrado"></strong></span>
+    </div>
+
+    <div class="score-row">
+      <div class="score-badge total">
+        <div class="val" id="sc-total">0</div>
+        <div class="lbl">Intentos</div>
+      </div>
+      <div class="score-badge correctas">
+        <div class="val" id="sc-ok">0</div>
+        <div class="lbl">Correctas</div>
+      </div>
+      <div class="score-badge incorrectas">
+        <div class="val" id="sc-no">0</div>
+        <div class="lbl">Incorrectas</div>
+      </div>
+      <div class="score-badge restantes">
+        <div class="val" id="sc-rest">29</div>
+        <div class="lbl">Restantes</div>
+      </div>
+    </div>
+
+    <div class="panel" id="problemaPanel">
+      <div class="bloque-tag" id="bloqueTag">Bloque</div>
+      <div class="problema-card">
+        <div class="problema-num" id="problemaNum">Problema #</div>
+        <div class="problema-texto" id="problemaTexto"></div>
+      </div>
+
+      <div class="respuesta-wrap">
+        <label>Tu respuesta</label>
+        <input type="text" id="respuestaInput" placeholder="Escribe aquí tu respuesta…" autocomplete="off">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-check" onclick="verificar()">✅ VERIFICAR</button>
+        <button class="btn btn-next"  onclick="siguiente()" id="btnSiguiente" disabled>➡ SIGUIENTE</button>
+      </div>
+
+      <div class="feedback" id="feedback">
+        <span class="ico" id="feedIco"></span>
+        <div class="txt">
+          <strong id="feedTitle"></strong>
+          <span id="feedDetail"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORIAL -->
+    <div id="historial">
+      <h3>📋 Registro de Respuestas</h3>
+      <div class="export-row">
+        <button class="btn btn-export" onclick="exportarCSV()">📥 Exportar CSV para Google Sheets</button>
+        <button class="btn btn-export" style="background:linear-gradient(135deg,#8B0000,#5a0000)" onclick="limpiarHistorial()">🗑 Limpiar</button>
+      </div>
+      <div class="table-wrap">
+        <table id="tablaHistorial">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Alumno</th>
+              <th>Problema</th>
+              <th>Su Respuesta</th>
+              <th>Correcta</th>
+              <th>Resultado</th>
+              <th>Hora</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyHistorial"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- FIN -->
+  <div id="fin" class="panel">
+    <div class="trofeo-big">🏆</div>
+    <h2>¡PARTIDO TERMINADO!</h2>
+    <p id="finNombre"></p>
+    <div class="final-score">
+      <div class="fs-box c">
+        <div class="n" id="fin-ok">0</div>
+        <div class="l">Correctas</div>
+      </div>
+      <div class="fs-box i">
+        <div class="n" id="fin-no">0</div>
+        <div class="l">Incorrectas</div>
+      </div>
+    </div>
+    <button class="btn btn-restart" onclick="reiniciar()">🔄 NUEVO PARTIDO</button>
+    <br><br>
+    <button class="btn btn-export" onclick="exportarCSV()">📥 Exportar CSV</button>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// ─────────────────────────────────────────
+//  DATOS: 29 PROBLEMAS
+// ─────────────────────────────────────────
+const problemas = [
+  // BLOQUE 1 – Decimal a Hexadecimal
+  { id:1,  bloque:'Bloque 1 · Decimal → Hexadecimal', texto:'45₁₀  →  Hexadecimal',  respuesta:['2D'],           valSrc:'45',   tipo:'DEC→HEX' },
+  { id:2,  bloque:'Bloque 1 · Decimal → Hexadecimal', texto:'189₁₀ →  Hexadecimal',  respuesta:['BD'],           valSrc:'189',  tipo:'DEC→HEX' },
+  { id:3,  bloque:'Bloque 1 · Decimal → Hexadecimal', texto:'256₁₀ →  Hexadecimal',  respuesta:['100'],          valSrc:'256',  tipo:'DEC→HEX' },
+  { id:4,  bloque:'Bloque 1 · Decimal → Hexadecimal', texto:'1023₁₀ → Hexadecimal', respuesta:['3FF'],          valSrc:'1023', tipo:'DEC→HEX' },
+  { id:5,  bloque:'Bloque 1 · Decimal → Hexadecimal', texto:'4094₁₀ → Hexadecimal', respuesta:['FFE'],          valSrc:'4094', tipo:'DEC→HEX' },
+  // BLOQUE 2 – Hexadecimal a Decimal
+  { id:6,  bloque:'Bloque 2 · Hexadecimal → Decimal', texto:'2F₁₆  →  Decimal',      respuesta:['47'],           valSrc:'2F',   tipo:'HEX→DEC' },
+  { id:7,  bloque:'Bloque 2 · Hexadecimal → Decimal', texto:'A5₁₆  →  Decimal',      respuesta:['165'],          valSrc:'A5',   tipo:'HEX→DEC' },
+  { id:8,  bloque:'Bloque 2 · Hexadecimal → Decimal', texto:'10C₁₆ →  Decimal',      respuesta:['268'],          valSrc:'10C',  tipo:'HEX→DEC' },
+  { id:9,  bloque:'Bloque 2 · Hexadecimal → Decimal', texto:'7B2₁₆ →  Decimal',      respuesta:['1970'],         valSrc:'7B2',  tipo:'HEX→DEC' },
+  { id:10, bloque:'Bloque 2 · Hexadecimal → Decimal', texto:'FFF₁₆ →  Decimal',      respuesta:['4095'],         valSrc:'FFF',  tipo:'HEX→DEC' },
+  // BLOQUE 3 – Binario a Decimal
+  { id:11, bloque:'Bloque 3 · Binario → Decimal',     texto:'1011₂    →  Decimal',   respuesta:['11'],           valSrc:'1011',      tipo:'BIN→DEC' },
+  { id:12, bloque:'Bloque 3 · Binario → Decimal',     texto:'11010₂   →  Decimal',   respuesta:['26'],           valSrc:'11010',     tipo:'BIN→DEC' },
+  { id:13, bloque:'Bloque 3 · Binario → Decimal',     texto:'100111₂  →  Decimal',   respuesta:['39'],           valSrc:'100111',    tipo:'BIN→DEC' },
+  { id:14, bloque:'Bloque 3 · Binario → Decimal',     texto:'11110001₂ → Decimal',   respuesta:['241'],          valSrc:'11110001',  tipo:'BIN→DEC' },
+  { id:15, bloque:'Bloque 3 · Binario → Decimal',     texto:'10101010₂ → Decimal',   respuesta:['170'],          valSrc:'10101010',  tipo:'BIN→DEC' },
+  // BLOQUE 4 – Decimal a Binario
+  { id:16, bloque:'Bloque 4 · Decimal → Binario',     texto:'23₁₀  →  Binario',      respuesta:['10111'],        valSrc:'23',   tipo:'DEC→BIN' },
+  { id:17, bloque:'Bloque 4 · Decimal → Binario',     texto:'64₁₀  →  Binario',      respuesta:['1000000'],      valSrc:'64',   tipo:'DEC→BIN' },
+  { id:18, bloque:'Bloque 4 · Decimal → Binario',     texto:'117₁₀ →  Binario',      respuesta:['1110101'],      valSrc:'117',  tipo:'DEC→BIN' },
+  { id:19, bloque:'Bloque 4 · Decimal → Binario',     texto:'240₁₀ →  Binario',      respuesta:['11110000'],     valSrc:'240',  tipo:'DEC→BIN' },
+  // BLOQUE 5 – Binario a Hexadecimal
+  { id:20, bloque:'Bloque 5 · Binario → Hexadecimal', texto:'1110₂        → Hexadecimal', respuesta:['E'],           valSrc:'1110',        tipo:'BIN→HEX' },
+  { id:21, bloque:'Bloque 5 · Binario → Hexadecimal', texto:'101101₂      → Hexadecimal', respuesta:['2D'],           valSrc:'101101',      tipo:'BIN→HEX' },
+  { id:22, bloque:'Bloque 5 · Binario → Hexadecimal', texto:'11001110₂    → Hexadecimal', respuesta:['CE'],           valSrc:'11001110',    tipo:'BIN→HEX' },
+  { id:23, bloque:'Bloque 5 · Binario → Hexadecimal', texto:'1010111100₂  → Hexadecimal', respuesta:['2BC'],          valSrc:'1010111100',  tipo:'BIN→HEX' },
+  { id:24, bloque:'Bloque 5 · Binario → Hexadecimal', texto:'111111110110₂ → Hexadecimal',respuesta:['FF6'],          valSrc:'111111110110',tipo:'BIN→HEX' },
+  // BLOQUE 6 – Hexadecimal a Binario
+  { id:25, bloque:'Bloque 6 · Hexadecimal → Binario', texto:'3B₁₆   →  Binario',     respuesta:['00111011','111011'],  valSrc:'3B',   tipo:'HEX→BIN' },
+  { id:26, bloque:'Bloque 6 · Hexadecimal → Binario', texto:'8E₁₆   →  Binario',     respuesta:['10001110'],          valSrc:'8E',   tipo:'HEX→BIN' },
+  { id:27, bloque:'Bloque 6 · Hexadecimal → Binario', texto:'1A7₁₆  →  Binario',     respuesta:['000110100111','110100111','0001 1010 0111'],valSrc:'1A7',  tipo:'HEX→BIN' },
+  { id:28, bloque:'Bloque 6 · Hexadecimal → Binario', texto:'C0D₁₆  →  Binario',     respuesta:['110000001101','1100 0000 1101'], valSrc:'C0D', tipo:'HEX→BIN' },
+  { id:29, bloque:'Bloque 6 · Hexadecimal → Binario', texto:'F5A2₁₆ →  Binario',     respuesta:['1111010110100010','1111 0101 1010 0010'], valSrc:'F5A2', tipo:'HEX→BIN' },
+];
+
+// ─────────────────────────────────────────
+//  AUDIO (Web Audio API)
+// ─────────────────────────────────────────
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTone(freq, type, dur, vol=0.4) {
+  const o = AC.createOscillator();
+  const g = AC.createGain();
+  o.connect(g); g.connect(AC.destination);
+  o.type = type; o.frequency.setValueAtTime(freq, AC.currentTime);
+  g.gain.setValueAtTime(vol, AC.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, AC.currentTime + dur);
+  o.start(); o.stop(AC.currentTime + dur);
+}
+
+function sonidoProblema() {
+  // fanfarria futbolística
+  const notas = [523,659,784,1047];
+  notas.forEach((f,i) => setTimeout(() => playTone(f,'square',.18,.3), i*90));
+}
+
+function sonidoCorrecto() {
+  // gol! melodía ascendente
+  const seq = [[523,.12],[659,.12],[784,.12],[1047,.22],[1047,.08],[1319,.35]];
+  let t = 0;
+  seq.forEach(([f,d]) => { setTimeout(() => playTone(f,'sine',d,.45), t*1000); t+=d; });
+  setTimeout(lanzarConfetti, 100);
+}
+
+function sonidoIncorrecto() {
+  // silbato de falta
+  playTone(300,'sawtooth',.08,.5);
+  setTimeout(() => playTone(280,'sawtooth',.08,.5), 90);
+  setTimeout(() => playTone(260,'sawtooth',.2,.4),  180);
+}
+
+// ─────────────────────────────────────────
+//  CONFETTI
+// ─────────────────────────────────────────
+function lanzarConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const particles = [];
+  const colors = ['#C8102E','#003DA5','#F5A623','#00843D','#fff'];
+  for(let i=0;i<140;i++) {
+    particles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*-canvas.height*.5,
+      vx:(Math.random()-0.5)*4,
+      vy: Math.random()*3+2,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      size: Math.random()*8+4,
+      rot: Math.random()*360,
+      vr:(Math.random()-0.5)*8
+    });
+  }
+  let frame;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p => {
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;
+      ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size/2);
+      ctx.restore();
+    });
+    if(particles.some(p=>p.y<canvas.height)) frame=requestAnimationFrame(draw);
+    else { ctx.clearRect(0,0,canvas.width,canvas.height); cancelAnimationFrame(frame); }
+  }
+  draw();
+  setTimeout(()=>{ cancelAnimationFrame(frame); ctx.clearRect(0,0,canvas.width,canvas.height); },4000);
+}
+
+// ─────────────────────────────────────────
+//  ESTADO
+// ─────────────────────────────────────────
+let alumno = '';
+let cola = [];           // índices mezclados
+let actual = null;
+let respondidos = 0;
+let correctas = 0;
+let incorrectas = 0;
+let historial = JSON.parse(localStorage.getItem('wc2026_hist')||'[]');
+let respondido = false;
+
+// ─────────────────────────────────────────
+//  MEZCLA (Fisher-Yates)
+// ─────────────────────────────────────────
+function mezclar(arr) {
+  for(let i=arr.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// ─────────────────────────────────────────
+//  INICIAR
+// ─────────────────────────────────────────
+function iniciarJuego() {
+  const val = document.getElementById('nombreInput').value.trim();
+  if(!val || val.length < 3) {
+    document.getElementById('nombreInput').focus();
+    document.getElementById('nombreInput').style.borderColor='var(--rojo)';
+    setTimeout(()=>document.getElementById('nombreInput').style.borderColor='',1500);
+    return;
+  }
+  alumno = val;
+  cola = mezclar([...Array(29).keys()]);
+  respondidos=0; correctas=0; incorrectas=0;
+  document.getElementById('nombreMostrado').textContent = alumno;
+  document.getElementById('registro').style.display='none';
+  document.getElementById('juego').style.display='block';
+  actualizarScores();
+  cargarProblema();
+  renderTabla();
+  document.getElementById('historial').style.display='block';
+}
+
+// ─────────────────────────────────────────
+//  CARGAR PROBLEMA
+// ─────────────────────────────────────────
+function cargarProblema() {
+  if(cola.length === 0) { mostrarFin(); return; }
+  const idx = cola.shift();
+  actual = problemas[idx];
+  respondido = false;
+
+  document.getElementById('bloqueTag').textContent = actual.bloque;
+  document.getElementById('problemaNum').textContent = `Problema #${actual.id} de 29`;
+  document.getElementById('problemaTexto').textContent = actual.texto;
+
+  document.getElementById('respuestaInput').value = '';
+  document.getElementById('respuestaInput').disabled = false;
+  document.getElementById('respuestaInput').focus();
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.style.display = 'none';
+
+  document.getElementById('btnSiguiente').disabled = true;
+
+  if(AC.state === 'suspended') AC.resume();
+  sonidoProblema();
+}
+
+// ─────────────────────────────────────────
+//  VERIFICAR
+// ─────────────────────────────────────────
+function verificar() {
+  if(respondido) return;
+  const resp = document.getElementById('respuestaInput').value.trim().toUpperCase().replace(/\s+/g,'');
+  if(!resp) return;
+
+  respondido = true;
+  respondidos++;
+  document.getElementById('respuestaInput').disabled = true;
+  document.getElementById('btnSiguiente').disabled = false;
+
+  // normalizar respuestas correctas
+  const correctasList = actual.respuesta.map(r => r.toUpperCase().replace(/\s+/g,''));
+  const esCorrecta = correctasList.includes(resp);
+
+  const fb = document.getElementById('feedback');
+  const ts = new Date().toLocaleTimeString('es-MX');
+
+  if(esCorrecta) {
+    correctas++;
+    fb.className = 'feedback show correcto';
+    document.getElementById('feedIco').textContent = '⚽';
+    document.getElementById('feedTitle').textContent = '¡GOL! Respuesta Correcta';
+    document.getElementById('feedDetail').textContent = `Respuesta: ${actual.respuesta[0]}`;
+    sonidoCorrecto();
+  } else {
+    incorrectas++;
+    fb.className = 'feedback show incorrecto';
+    document.getElementById('feedIco').textContent = '🟥';
+    document.getElementById('feedTitle').textContent = 'Tarjeta Roja — Respuesta Incorrecta';
+    document.getElementById('feedDetail').textContent = `Tu respuesta: ${resp}   |   Correcta: ${actual.respuesta[0]}`;
+    sonidoIncorrecto();
+  }
+  fb.style.display = 'flex';
+  actualizarScores();
+
+  // guardar en historial
+  const reg = {
+    alumno,
+    num: actual.id,
+    problema: actual.texto,
+    tipo: actual.tipo,
+    respAlumno: resp,
+    respCorrecta: actual.respuesta[0],
+    correcto: esCorrecta ? 'SÍ' : 'NO',
+    hora: ts
+  };
+  historial.push(reg);
+  localStorage.setItem('wc2026_hist', JSON.stringify(historial));
+  renderTabla();
+}
+
+// ─────────────────────────────────────────
+//  SIGUIENTE
+// ─────────────────────────────────────────
+function siguiente() {
+  if(!respondido) return;
+  if(cola.length === 0) { mostrarFin(); return; }
+  cargarProblema();
+}
+
+// ─────────────────────────────────────────
+//  SCORES
+// ─────────────────────────────────────────
+function actualizarScores() {
+  document.getElementById('sc-total').textContent  = respondidos;
+  document.getElementById('sc-ok').textContent     = correctas;
+  document.getElementById('sc-no').textContent     = incorrectas;
+  document.getElementById('sc-rest').textContent   = cola.length;
+}
+
+// ─────────────────────────────────────────
+//  FIN
+// ─────────────────────────────────────────
+function mostrarFin() {
+  document.getElementById('problemaPanel').style.display='none';
+  document.getElementById('fin').style.display='block';
+  document.getElementById('finNombre').textContent = `¡Felicidades, ${alumno}! Completaste los 29 problemas.`;
+  document.getElementById('fin-ok').textContent = correctas;
+  document.getElementById('fin-no').textContent = incorrectas;
+  sonidoCorrecto();
+}
+
+function reiniciar() {
+  document.getElementById('fin').style.display='none';
+  document.getElementById('problemaPanel').style.display='block';
+  document.getElementById('registro').style.display='block';
+  document.getElementById('juego').style.display='none';
+  document.getElementById('nombreInput').value='';
+}
+
+// ─────────────────────────────────────────
+//  TABLA
+// ─────────────────────────────────────────
+function renderTabla() {
+  const tbody = document.getElementById('tbodyHistorial');
+  tbody.innerHTML = '';
+  historial.slice().reverse().forEach((r,i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${historial.length - i}</td>
+      <td>${r.alumno}</td>
+      <td style="font-family:'Share Tech Mono',monospace;font-size:.85rem">${r.problema}</td>
+      <td style="font-family:'Share Tech Mono',monospace">${r.respAlumno}</td>
+      <td style="font-family:'Share Tech Mono',monospace">${r.respCorrecta}</td>
+      <td class="${r.correcto==='SÍ'?'tag-ok':'tag-no'}">${r.correcto==='SÍ'?'✅ SÍ':'❌ NO'}</td>
+      <td>${r.hora}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ─────────────────────────────────────────
+//  EXPORTAR CSV
+// ─────────────────────────────────────────
+function exportarCSV() {
+  if(!historial.length) { alert('No hay registros aún.'); return; }
+  const enc = v => `"${String(v).replace(/"/g,'""')}"`;
+  const header = ['#','Alumno','Problema','Tipo','Respuesta Alumno','Respuesta Correcta','Correcto','Hora'];
+  const rows = historial.map((r,i)=>[
+    i+1, r.alumno, r.problema, r.tipo, r.respAlumno, r.respCorrecta, r.correcto, r.hora
+  ].map(enc).join(','));
+  const csv = [header.join(','), ...rows].join('\r\n');
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = `mundial2026_conversiones_${Date.now()}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function limpiarHistorial() {
+  if(!confirm('¿Borrar todo el historial guardado?')) return;
+  historial = [];
+  localStorage.removeItem('wc2026_hist');
+  renderTabla();
+}
+
+// ─────────────────────────────────────────
+//  ENTER
+// ─────────────────────────────────────────
+document.getElementById('nombreInput').addEventListener('keydown', e => { if(e.key==='Enter') iniciarJuego(); });
+document.addEventListener('keydown', e => {
+  if(document.getElementById('juego').style.display==='none') return;
+  if(e.key==='Enter') {
+    if(!respondido) verificar();
+    else if(!document.getElementById('btnSiguiente').disabled) siguiente();
+  }
+});
+
+// Render historial previo al cargar
+renderTabla();
+if(historial.length) document.getElementById('historial').style.display='block';
+</script>
+</body>
+</html>
