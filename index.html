@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mundial de Problemas 2026 — Sorteo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-dark:#06140F;
+  --bg-darker:#030D09;
+  --pitch:#0F7A4B;
+  --pitch-line:#1D9B5F;
+  --green-bright:#27C26B;
+  --gold:#F2B705;
+  --gold-soft:#FBE8A6;
+  --red:#E63946;
+  --navy:#14213D;
+  --cream:#F4F1EA;
+  --line:rgba(244,241,234,0.16);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(ellipse at top, rgba(39,194,107,0.12), transparent 60%),
+    repeating-linear-gradient(0deg, var(--bg-dark) 0 80px, var(--bg-darker) 80px 160px);
+  color:var(--cream);
+  font-family:'Rajdhani',sans-serif;
+  font-weight:600;
+  overflow-x:hidden;
+}
+.stripe{
+  height:8px;
+  width:100%;
+  background:linear-gradient(90deg,#B22234 0 33%, var(--navy) 33% 66%, var(--red) 66% 100%);
+}
+header{
+  text-align:center;
+  padding:34px 16px 18px;
+}
+header .eyebrow{
+  font-family:'Orbitron',sans-serif;
+  letter-spacing:6px;
+  font-size:12px;
+  color:var(--gold-soft);
+  opacity:0.85;
+}
+header h1{
+  font-family:'Anton',sans-serif;
+  font-weight:400;
+  font-size:clamp(34px,6vw,64px);
+  letter-spacing:2px;
+  margin:6px 0 4px;
+  color:var(--cream);
+  text-shadow:0 0 18px rgba(39,194,107,0.45), 0 4px 0 rgba(0,0,0,0.35);
+}
+header h1 span{color:var(--gold);}
+header p.sub{
+  font-size:16px;
+  color:rgba(244,241,234,0.7);
+  margin:0;
+}
+.round-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:16px;
+  padding:8px 22px;
+  border-radius:999px;
+  background:rgba(242,183,5,0.12);
+  border:1px solid rgba(242,183,5,0.5);
+  font-family:'Orbitron',sans-serif;
+  font-size:13px;
+  letter-spacing:2px;
+  color:var(--gold);
+}
+
+.field{
+  max-width:1180px;
+  margin:0 auto;
+  padding:10px 20px 60px;
+}
+
+/* SCOREBOARD */
+.scoreboard{
+  background:linear-gradient(180deg, rgba(20,33,61,0.85), rgba(6,20,15,0.95));
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:22px 18px 26px;
+  margin-bottom:34px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+  position:relative;
+}
+.matchcard{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:14px;
+  text-align:center;
+}
+.side .label{
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;
+  letter-spacing:3px;
+  color:rgba(244,241,234,0.55);
+  margin-bottom:6px;
+}
+.side .value{
+  font-family:'Anton',sans-serif;
+  font-size:clamp(42px,9vw,76px);
+  line-height:1;
+  color:var(--cream);
+  transition:transform .25s ease, color .25s ease;
+}
+.side .value.pop{ color:var(--gold); transform:scale(1.08); }
+.side .sub{
+  font-size:14px;
+  color:rgba(244,241,234,0.55);
+  margin-top:4px;
+}
+.vs{
+  font-family:'Anton',sans-serif;
+  font-size:28px;
+  color:var(--red);
+  opacity:0.85;
+}
+.timer-wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-top:22px;
+  padding-top:20px;
+  border-top:1px dashed var(--line);
+}
+.clock{
+  font-family:'Orbitron',sans-serif;
+  font-weight:900;
+  font-size:clamp(48px,10vw,86px);
+  letter-spacing:4px;
+  color:var(--green-bright);
+  text-shadow:0 0 24px rgba(39,194,107,0.55);
+  transition:color .3s, text-shadow .3s;
+}
+.clock.warn{ color:var(--gold); text-shadow:0 0 24px rgba(242,183,5,0.6);}
+.clock.danger{ color:var(--red); text-shadow:0 0 28px rgba(230,57,70,0.75); animation:pulse 0.6s infinite;}
+@keyframes pulse{ 50%{ opacity:0.45; } }
+.clock-label{
+  font-family:'Orbitron',sans-serif;
+  font-size:11px;
+  letter-spacing:3px;
+  color:rgba(244,241,234,0.5);
+  margin-top:4px;
+}
+.controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+  margin-top:18px;
+}
+button{
+  font-family:'Rajdhani',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  letter-spacing:1px;
+  border:none;
+  border-radius:12px;
+  padding:13px 22px;
+  cursor:pointer;
+  transition:transform .15s ease, filter .15s ease, opacity .15s;
+}
+button:active{ transform:translateY(2px); }
+button:disabled{ opacity:0.35; cursor:not-allowed; }
+.btn-primary{ background:linear-gradient(135deg,var(--green-bright),var(--pitch)); color:#04150D; box-shadow:0 8px 22px rgba(39,194,107,0.35);}
+.btn-primary:hover:not(:disabled){ filter:brightness(1.1); }
+.btn-gold{ background:linear-gradient(135deg,var(--gold),#C98E03); color:#2A1B00; box-shadow:0 8px 22px rgba(242,183,5,0.3);}
+.btn-gold:hover:not(:disabled){ filter:brightness(1.08); }
+.btn-ghost{ background:transparent; border:1px solid var(--line); color:var(--cream); }
+.btn-ghost:hover:not(:disabled){ background:rgba(244,241,234,0.06); }
+.btn-danger{ background:linear-gradient(135deg,var(--red),#9c1f29); color:#fff; box-shadow:0 8px 22px rgba(230,57,70,0.3);}
+
+/* WHEELS */
+.wheels{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  margin-bottom:30px;
+}
+@media(max-width:760px){ .wheels{ grid-template-columns:1fr; } }
+.wheel-panel{
+  background:radial-gradient(ellipse at top, rgba(255,255,255,0.03), transparent 70%), rgba(6,20,15,0.6);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:20px;
+  text-align:center;
+}
+.wheel-panel h2{
+  font-family:'Anton',sans-serif;
+  font-weight:400;
+  font-size:22px;
+  letter-spacing:1px;
+  margin:0 0 4px;
+}
+.wheel-panel h2.problemas{ color:var(--green-bright); }
+.wheel-panel h2.alumnos{ color:var(--gold); }
+.wheel-panel .count{
+  font-size:13px;
+  color:rgba(244,241,234,0.55);
+  margin-bottom:14px;
+}
+.wheel-stage{
+  position:relative;
+  width:min(280px,80vw);
+  margin:0 auto 16px;
+}
+.pointer{
+  position:absolute;
+  top:-6px;
+  left:50%;
+  transform:translateX(-50%);
+  width:0; height:0;
+  border-left:14px solid transparent;
+  border-right:14px solid transparent;
+  border-top:22px solid var(--gold);
+  filter:drop-shadow(0 3px 4px rgba(0,0,0,0.5));
+  z-index:5;
+}
+canvas{
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:50%;
+  border:4px solid rgba(244,241,234,0.85);
+  box-shadow:0 0 0 4px var(--bg-dark), 0 16px 30px rgba(0,0,0,0.5);
+}
+.hub{
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:46px; height:46px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff, var(--gold) 60%, #b07c00);
+  border:3px solid var(--bg-dark);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+  z-index:4;
+}
+
+/* ROSTERS */
+.rosters{
+  display:grid;
+  grid-template-columns:1.6fr 1fr;
+  gap:20px;
+}
+@media(max-width:760px){ .rosters{ grid-template-columns:1fr; } }
+.roster{
+  background:rgba(6,20,15,0.55);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:18px;
+}
+.roster h3{
+  font-family:'Orbitron',sans-serif;
+  font-size:13px;
+  letter-spacing:2px;
+  color:rgba(244,241,234,0.6);
+  margin:0 0 14px;
+}
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.chip{
+  width:42px; height:42px;
+  border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Orbitron',sans-serif;
+  font-size:14px;
+  background:rgba(39,194,107,0.12);
+  border:1px solid rgba(39,194,107,0.4);
+  color:var(--green-bright);
+  transition:all .35s ease;
+}
+.roster.alumnos .chip{
+  background:rgba(242,183,5,0.12);
+  border:1px solid rgba(242,183,5,0.45);
+  color:var(--gold);
+}
+.chip.used{
+  background:transparent;
+  border:1px solid rgba(244,241,234,0.12);
+  color:rgba(244,241,234,0.25);
+  text-decoration:line-through;
+}
+.chip.done{
+  background:rgba(230,57,70,0.15);
+  border:1px solid rgba(230,57,70,0.4);
+  color:rgba(230,57,70,0.55);
+  position:relative;
+  overflow:hidden;
+}
+.chip.done::after{
+  content:'✕';
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  font-weight:900;
+  color:var(--red);
+  opacity:0.75;
+}
+.chip.current{
+  background:var(--gold);
+  border-color:var(--gold);
+  color:#221700;
+  box-shadow:0 0 18px rgba(242,183,5,0.7);
+  transform:scale(1.12);
+}
+.roster.alumnos .chip.current{
+  background:var(--gold);
+  border-color:var(--gold);
+  color:#221700;
+  box-shadow:0 0 18px rgba(242,183,5,0.7);
+  transform:scale(1.12);
+}
+.roster.alumnos .chip.used{
+  background:transparent;
+  border:1px solid rgba(244,241,234,0.12);
+  color:rgba(244,241,234,0.25);
+  text-decoration:line-through;
+}
+.roster.alumnos .chip.done{
+  background:rgba(230,57,70,0.15);
+  border:1px solid rgba(230,57,70,0.4);
+  color:rgba(230,57,70,0.55);
+}
+
+footer{
+  text-align:center;
+  padding:24px;
+  font-size:12px;
+  color:rgba(244,241,234,0.35);
+  letter-spacing:1px;
+}
+
+.confetti-piece{
+  position:fixed;
+  top:-20px;
+  width:9px; height:14px;
+  z-index:50;
+  pointer-events:none;
+  animation:fall linear forwards;
+  border-radius:2px;
+}
+@keyframes fall{
+  to{ transform:translateY(110vh) rotate(540deg); opacity:0.2; }
+}
+
+.whistle-banner{
+  position:fixed;
+  inset:0;
+  background:rgba(3,13,9,0.88);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  z-index:80;
+  text-align:center;
+  gap:10px;
+}
+.whistle-banner.show{ display:flex; }
+.whistle-banner .big{
+  font-family:'Anton',sans-serif;
+  font-size:clamp(40px,9vw,90px);
+  color:var(--red);
+  text-shadow:0 0 30px rgba(230,57,70,0.7);
+  animation:pulse .5s infinite;
+}
+.whistle-banner .small{
+  font-family:'Rajdhani',sans-serif;
+  font-size:18px;
+  color:var(--cream);
+}
+
+.complete-banner{
+  display:none;
+  text-align:center;
+  margin-top:14px;
+  padding:14px;
+  border-radius:14px;
+  background:linear-gradient(135deg, rgba(242,183,5,0.18), rgba(39,194,107,0.18));
+  border:1px solid var(--gold);
+  font-family:'Anton',sans-serif;
+  font-size:20px;
+  color:var(--gold-soft);
+}
+.complete-banner.show{ display:block; }
+
+.audio-unlock{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+  z-index:90;
+  background:linear-gradient(135deg,var(--gold),#C98E03);
+  color:#2A1B00;
+  font-family:'Orbitron',sans-serif;
+  font-size:12px;
+  letter-spacing:1px;
+  border:none;
+  border-radius:999px;
+  padding:14px 20px;
+  box-shadow:0 10px 26px rgba(0,0,0,0.5), 0 0 0 4px rgba(242,183,5,0.15);
+  cursor:pointer;
+  display:none;
+  animation:pulse 1.6s infinite;
+}
+.audio-unlock.show{ display:block; }
+</style>
+</head>
+<body>
+
+<div class="stripe"></div>
+
+<header>
+  <div class="eyebrow">USA · MÉXICO · CANADÁ — EDICIÓN ESCOLAR</div>
+  <h1>MUNDIAL DE <span>PROBLEMAS</span> 2026</h1>
+  <p class="sub">Sorteo oficial de problemas y jugadores — ¡que comience el partido!</p>
+  <div class="round-pill">⚽ RONDA <span id="roundNumber">1</span> / 16</div>
+</header>
+
+<div class="field">
+
+  <div class="wheels">
+    <div class="wheel-panel">
+      <h2 class="problemas">🟢 RULETA DE PROBLEMAS</h2>
+      <div class="count"><span id="problemsLeft">29</span> problemas disponibles</div>
+      <div class="wheel-stage">
+        <div class="pointer"></div>
+        <canvas id="wheelProblems" width="560" height="560"></canvas>
+        <div class="hub">⚽</div>
+      </div>
+    </div>
+
+    <div class="wheel-panel">
+      <h2 class="alumnos">🟡 RULETA DE ALUMNOS</h2>
+      <div class="count"><span id="studentsLeft">16</span> jugadores disponibles</div>
+      <div class="wheel-stage">
+        <div class="pointer"></div>
+        <canvas id="wheelStudents" width="560" height="560"></canvas>
+        <div class="hub">🏆</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scoreboard">
+    <div class="matchcard">
+      <div class="side">
+        <div class="label">PROBLEMA</div>
+        <div class="value" id="scoreProblem">--</div>
+        <div class="sub">a resolver</div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="side">
+        <div class="label">ALUMNO</div>
+        <div class="value" id="scoreStudent">--</div>
+        <div class="sub">en cancha</div>
+      </div>
+    </div>
+
+    <div class="complete-banner" id="completeBanner">🏆 ¡TORNEO COMPLETO! Los 16 jugadores ya participaron 🏆</div>
+
+    <div class="timer-wrap">
+      <div class="clock" id="clock">02:00</div>
+      <div class="clock-label">TIEMPO DE JUEGO</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-primary" id="btnSpin">⚽ SORTEAR RONDA</button>
+      <button class="btn-gold" id="btnStartTimer" disabled>▶ INICIAR CRONÓMETRO</button>
+      <button class="btn-ghost" id="btnPauseTimer" disabled>⏸ PAUSAR</button>
+      <button class="btn-ghost" id="btnResetTimer" disabled>⏮ REINICIAR TIEMPO</button>
+      <button class="btn-danger" id="btnResetGame">🔄 REINICIAR TORNEO</button>
+    </div>
+  </div>
+
+  <div class="rosters">
+    <div class="roster problemas">
+      <h3>TABLERO DE PROBLEMAS (1–29)</h3>
+      <div class="chips" id="chipsProblems"></div>
+    </div>
+    <div class="roster alumnos">
+      <h3>LISTA DE ASISTENCIA (1–16)</h3>
+      <div class="chips" id="chipsStudents"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Sorteo aleatorio sin repetición · cada jugador participa una sola vez · Mundial de Problemas 2026</footer>
+
+<div class="whistle-banner" id="whistleBanner">
+  <div class="big">📣 ¡TIEMPO!</div>
+  <div class="small">Silbatazo final — se acabó el tiempo de juego</div>
+  <button class="btn-gold" id="btnDismissWhistle" style="margin-top:14px;">Entendido</button>
+</div>
+
+<button id="btnEnableAudio" class="audio-unlock">🔊 ACTIVAR SONIDO</button>
+
+<audio id="marioPowerAudio" src="https://raw.githubusercontent.com/juliohdez74/Evaluacion/main/Super_mario_bros__world_2.mp3" loop preload="auto"></audio>
+
+<script>
+/* ====================================================================
+   MOTOR DE AUDIO — todo generado con Web Audio API (sin archivos
+   externos). Las pistas son composiciones originales estilo chiptune
+   inspiradas en el ambiente festivo de un mundial y en la energía de
+   un "modo poder" de videojuego retro, NO son reproducciones de obras
+   con derechos de autor.
+==================================================================== */
+let audioCtx = null;
+let masterGain, bgGain, powerGain, sfxGain;
+
+function getCtx(){
+  if(!audioCtx){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.7;
+    masterGain.connect(audioCtx.destination);
+
+    bgGain = audioCtx.createGain();
+    bgGain.gain.value = 0.45;
+    bgGain.connect(masterGain);
+
+    powerGain = audioCtx.createGain();
+    powerGain.gain.value = 0.4;
+    powerGain.connect(masterGain);
+
+    sfxGain = audioCtx.createGain();
+    sfxGain.gain.value = 0.55;
+    sfxGain.connect(masterGain);
+  }
+  return audioCtx;
+}
+
+function playNote(dest, freq, dur, type, vol){
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(vol, ctx.currentTime + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + dur);
+  osc.connect(g).connect(dest);
+  osc.start();
+  osc.stop(ctx.currentTime + dur + 0.05);
+}
+
+function createNoiseBuffer(dur){
+  const ctx = getCtx();
+  const bufferSize = Math.max(1, Math.floor(ctx.sampleRate * dur));
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){ data[i] = Math.random()*2 - 1; }
+  return buffer;
+}
+
+function playKick(dest){
+  const ctx = getCtx();
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(120, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(42, ctx.currentTime + 0.15);
+  g.gain.setValueAtTime(0.55, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+  osc.connect(g).connect(dest);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.2);
+}
+
+function playSnare(dest){
+  const ctx = getCtx();
+  const src = ctx.createBufferSource();
+  src.buffer = createNoiseBuffer(0.15);
+  const filt = ctx.createBiquadFilter();
+  filt.type = 'bandpass';
+  filt.frequency.value = 1800;
+  filt.Q.value = 1;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.35, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+  src.connect(filt).connect(g).connect(dest);
+  src.start();
+}
+
+function playHat(dest){
+  const ctx = getCtx();
+  const src = ctx.createBufferSource();
+  src.buffer = createNoiseBuffer(0.05);
+  const filt = ctx.createBiquadFilter();
+  filt.type = 'highpass';
+  filt.frequency.value = 7000;
+  const g = ctx.createGain();
+  g.gain.setValueAtTime(0.1, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+  src.connect(filt).connect(g).connect(dest);
+  src.start();
+}
+
+/* ---- Música de fondo: ambiente de estadio mundialista en loop ----
+   vuvuzela de fondo + batería estilo samba + riff de metales con el
+   patrón clásico de cántico "O-LÉ, O-LÉ" (todo compuesto, no reproduce
+   ninguna obra existente). ---- */
+let bgPlaying = false;
+let bgGenId = 0;
+let bgDroneOsc = null;
+let bgDroneGain = null;
+function startBackgroundMusic(){
+  if(bgPlaying) return;
+  const ctx = getCtx();
+  bgPlaying = true;
+  const myGen = ++bgGenId;
+
+  // vuvuzela: tono grave y zumbón de fondo
+  bgDroneOsc = ctx.createOscillator();
+  bgDroneOsc.type = 'sawtooth';
+  bgDroneOsc.frequency.value = 233.08; // Sib3, tono típico de vuvuzela
+  bgDroneGain = ctx.createGain();
+  bgDroneGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  bgDroneGain.gain.exponentialRampToValueAtTime(0.05, ctx.currentTime + 1.5);
+  bgDroneOsc.connect(bgDroneGain).connect(bgGain);
+  bgDroneOsc.start();
+
+  // riff de metales, patrón de cántico de estadio (16 pasos = 1 compás)
+  const brassRiff = [392.00,392.00,440.00,392.00, 349.23,349.23,392.00,349.23,
+                      440.00,440.00,493.88,440.00, 392.00,392.00,349.23,392.00];
+  const stepDur = 0.25;
+  let i = 0;
+  (function step(){
+    if(!bgPlaying || myGen !== bgGenId) return;
+    if(i % 2 === 0){
+      playNote(bgGain, brassRiff[i % brassRiff.length], stepDur*1.7, 'sawtooth', 0.26);
+    }
+    if(i % 4 === 0) playKick(bgGain);
+    if(i % 4 === 2) playSnare(bgGain);
+    playHat(bgGain);
+    i++;
+    setTimeout(step, stepDur*1000);
+  })();
+}
+function stopBackgroundMusic(){
+  bgPlaying = false;
+  bgGenId++;
+  if(bgDroneOsc){
+    try{
+      const ctx = getCtx();
+      bgDroneGain.gain.cancelScheduledValues(ctx.currentTime);
+      bgDroneGain.gain.setValueAtTime(bgDroneGain.gain.value, ctx.currentTime);
+      bgDroneGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.2);
+      bgDroneOsc.stop(ctx.currentTime + 0.25);
+    }catch(e){}
+    bgDroneOsc = null;
+    bgDroneGain = null;
+  }
+}
+
+/* ---- Sonido "modo poder" para el cronómetro: usa el archivo de
+   audio que el usuario coloque junto a este HTML (marioPowerAudio).
+   Si el archivo no está disponible, cae de vuelta al jingle sintetizado. ---- */
+const marioAudio = document.getElementById('marioPowerAudio');
+let powerPlaying = false;
+function playPowerUpJingleFallback(){
+  const ctx = getCtx();
+  const scale = [523.25,587.33,659.25,698.46,783.99,880.00,987.77,1046.50];
+  let i = 0;
+  const stepDur = 0.06;
+  (function step(){
+    if(i >= scale.length) return;
+    playNote(powerGain, scale[i], stepDur*1.4, 'square', 0.4);
+    i++;
+    setTimeout(step, stepDur*1000);
+  })();
+}
+function startPowerMusic(){
+  if(powerPlaying) return;
+  powerPlaying = true;
+  getCtx();
+  marioAudio.volume = 0.85;
+  marioAudio.currentTime = marioAudio.currentTime || 0;
+  const playPromise = marioAudio.play();
+  if(playPromise && playPromise.catch){
+    playPromise.catch(()=>{ playPowerUpJingleFallback(); });
+  }
+}
+function stopPowerMusic(){
+  powerPlaying = false;
+  marioAudio.pause();
+}
+function resetPowerMusic(){
+  powerPlaying = false;
+  marioAudio.pause();
+  marioAudio.currentTime = 0;
+}
+
+/* ---- Efecto de giro de ruleta: serie de "clics" que se desaceleran ---- */
+function playClick(){
+  const ctx = getCtx();
+  const bufferSize = Math.floor(ctx.sampleRate * 0.03);
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){ data[i] = (Math.random()*2-1) * (1 - i/bufferSize); }
+  const src = ctx.createBufferSource();
+  src.buffer = buffer;
+  const filt = ctx.createBiquadFilter();
+  filt.type = 'bandpass';
+  filt.frequency.value = 2200;
+  filt.Q.value = 6;
+  const g = ctx.createGain();
+  g.gain.value = 0.5;
+  src.connect(filt).connect(g).connect(sfxGain);
+  src.start();
+}
+function playSpinSound(durationMs){
+  let elapsed = 0;
+  (function tick(){
+    if(elapsed >= durationMs) return;
+    playClick();
+    const progress = elapsed/durationMs;
+    const interval = 45 + progress*210;
+    elapsed += interval;
+    setTimeout(tick, interval);
+  })();
+}
+
+/* ---- Fanfarria de festejo: se reproduce al terminar ambas ruletas ---- */
+function playCelebration(){
+  try{
+    const ctx = getCtx();
+    // Fanfarria ascendente estilo trompeta de victoria (patrón original compuesto)
+    const notes = [
+      {f:523.25, t:0.00, d:0.12},
+      {f:659.25, t:0.11, d:0.12},
+      {f:783.99, t:0.22, d:0.12},
+      {f:1046.50,t:0.33, d:0.28},
+      {f:880.00, t:0.62, d:0.12},
+      {f:987.77, t:0.74, d:0.12},
+      {f:1046.50,t:0.86, d:0.45},
+    ];
+    const dest = sfxGain;
+    notes.forEach(({f,t,d})=>{
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + t + 0.018);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + d);
+      osc.connect(g).connect(dest);
+      osc.start(ctx.currentTime + t);
+      osc.stop(ctx.currentTime + t + d + 0.05);
+    });
+    // bombo de acompañamiento
+    [0.00, 0.33, 0.86].forEach(t=>{
+      const osc2 = ctx.createOscillator();
+      const g2 = ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(140, ctx.currentTime + t);
+      osc2.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + t + 0.14);
+      g2.gain.setValueAtTime(0.45, ctx.currentTime + t);
+      g2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.17);
+      osc2.connect(g2).connect(dest);
+      osc2.start(ctx.currentTime + t);
+      osc2.stop(ctx.currentTime + t + 0.2);
+    });
+  }catch(e){}
+}
+
+/* ---- Desbloqueo de audio (políticas de autoplay de los navegadores) ---- */
+const btnEnableAudio = document.getElementById('btnEnableAudio');
+function tryStartBackgroundOnLoad(){
+  getCtx();
+  if(audioCtx.state === 'suspended'){
+    btnEnableAudio.classList.add('show');
+  } else {
+    startBackgroundMusic();
+  }
+}
+btnEnableAudio.addEventListener('click', ()=>{
+  getCtx().resume().then(()=>{
+    btnEnableAudio.classList.remove('show');
+    startBackgroundMusic();
+  });
+});
+window.addEventListener('load', ()=>{
+  setTimeout(tryStartBackgroundOnLoad, 300);
+});
+document.addEventListener('click', function unlockOnce(){
+  if(audioCtx && audioCtx.state === 'suspended'){
+    audioCtx.resume().then(()=>{
+      btnEnableAudio.classList.remove('show');
+      startBackgroundMusic();
+    });
+  }
+}, { once:false });
+
+/* ---------- ESTADO ---------- */
+const TOTAL_PROBLEMS = 29;
+const TOTAL_STUDENTS = 16;
+let remainingProblems = Array.from({length: TOTAL_PROBLEMS}, (_,i)=>i+1);
+let remainingStudents = Array.from({length: TOTAL_STUDENTS}, (_,i)=>i+1);
+let usedProblems = [];
+let usedStudents = [];
+let doneProblems = [];   // ya jugaron y cronómetro terminó → marca X
+let doneStudents = [];
+let round = 1;
+let spinning = false;
+let currentProblem = null;
+let currentStudent = null;
+
+/* ---------- COLORES SEGMENTOS ---------- */
+const palette = ['#27C26B','#F2B705','#E63946','#14213D'];
+
+/* ---------- DIBUJO DE RULETA ---------- */
+function drawWheel(canvas, items, rotation){
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const cx = w/2, cy = h/2, r = w/2 - 6;
+  ctx.clearRect(0,0,w,h);
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(rotation);
+
+  const n = items.length;
+  if(n === 0){
+    ctx.beginPath();
+    ctx.arc(0,0,r,0,Math.PI*2);
+    ctx.fillStyle = 'rgba(244,241,234,0.08)';
+    ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = '#F4F1EA';
+    ctx.font = "bold 22px Rajdhani";
+    ctx.textAlign = 'center';
+    ctx.fillText('VACÍA', cx, cy+8);
+    return;
+  }
+
+  const seg = (Math.PI*2)/n;
+  for(let i=0;i<n;i++){
+    const start = i*seg;
+    const end = start+seg;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.arc(0,0,r,start,end);
+    ctx.closePath();
+    ctx.fillStyle = palette[i % palette.length];
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(4,16,12,0.6)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.save();
+    ctx.rotate(start + seg/2);
+    ctx.translate(r*0.66, 0);
+    ctx.rotate(Math.PI/2);
+    ctx.fillStyle = '#fff';
+    ctx.font = "bold " + Math.max(14, Math.min(26, 240/n)) + "px Rajdhani";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(items[i], 0, 0);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+const canvasP = document.getElementById('wheelProblems');
+const canvasS = document.getElementById('wheelStudents');
+let rotP = 0, rotS = 0;
+drawWheel(canvasP, remainingProblems, rotP);
+drawWheel(canvasS, remainingStudents, rotS);
+
+/* ---------- ANIMACIÓN DE GIRO ---------- */
+function easeOutCubic(t){ return 1 - Math.pow(1-t,3); }
+
+function spinWheel(canvas, items, currentRot, onDone){
+  return new Promise(resolve=>{
+    const n = items.length;
+    const targetIndex = Math.floor(Math.random()*n);
+    const seg = (Math.PI*2)/n;
+    // queremos que el centro del segmento targetIndex quede arriba (apuntador en -90deg / -PI/2)
+    const segCenter = targetIndex*seg + seg/2;
+    const extraSpins = 5 + Math.random()*2; // 5-7 vueltas
+    const finalRot = -Math.PI/2 - segCenter + extraSpins*Math.PI*2;
+    const startRot = currentRot;
+    const delta = finalRot - (startRot % (Math.PI*2));
+    const duration = 3600;
+    const t0 = performance.now();
+
+    function frame(now){
+      const elapsed = now - t0;
+      const t = Math.min(1, elapsed/duration);
+      const eased = easeOutCubic(t);
+      const rot = startRot + delta*eased;
+      drawWheel(canvas, items, rot);
+      if(t < 1){
+        requestAnimationFrame(frame);
+      } else {
+        resolve({ value: items[targetIndex], index: targetIndex, finalRotation: rot });
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+/* ---------- CHIPS / ROSTER ---------- */
+function renderChips(){
+  const cp = document.getElementById('chipsProblems');
+  const cs = document.getElementById('chipsStudents');
+  cp.innerHTML = '';
+  cs.innerHTML = '';
+  for(let i=1;i<=TOTAL_PROBLEMS;i++){
+    let cls = 'chip';
+    if(i === currentProblem)          cls += ' current';
+    else if(doneProblems.includes(i)) cls += ' done';
+    else if(usedProblems.includes(i)) cls += ' used';
+    const div = document.createElement('div');
+    div.className = cls;
+    div.textContent = i;
+    cp.appendChild(div);
+  }
+  for(let i=1;i<=TOTAL_STUDENTS;i++){
+    let cls = 'chip';
+    if(i === currentStudent)          cls += ' current';
+    else if(doneStudents.includes(i)) cls += ' done';
+    else if(usedStudents.includes(i)) cls += ' used';
+    const div = document.createElement('div');
+    div.className = cls;
+    div.textContent = i;
+    cs.appendChild(div);
+  }
+  document.getElementById('problemsLeft').textContent = remainingProblems.length;
+  document.getElementById('studentsLeft').textContent = remainingStudents.length;
+  document.getElementById('roundNumber').textContent = Math.min(round, TOTAL_STUDENTS);
+}
+renderChips();
+
+/* ---------- CONFETI ---------- */
+function launchConfetti(){
+  const colors = ['#27C26B','#F2B705','#E63946','#14213D','#F4F1EA'];
+  for(let i=0;i<60;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random()*100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.animationDuration = (2.2 + Math.random()*1.6) + 's';
+    piece.style.opacity = 0.9;
+    document.body.appendChild(piece);
+    setTimeout(()=>piece.remove(), 4200);
+  }
+}
+
+/* ---------- SORTEO DE RONDA ---------- */
+const btnSpin = document.getElementById('btnSpin');
+const btnStartTimer = document.getElementById('btnStartTimer');
+const scoreProblemEl = document.getElementById('scoreProblem');
+const scoreStudentEl = document.getElementById('scoreStudent');
+const completeBanner = document.getElementById('completeBanner');
+
+btnSpin.addEventListener('click', async ()=>{
+  if(spinning) return;
+  if(remainingProblems.length===0 || remainingStudents.length===0) return;
+  spinning = true;
+  btnSpin.disabled = true;
+  btnStartTimer.disabled = true;
+  resetClockState();
+  stopBackgroundMusic();
+
+  scoreProblemEl.classList.remove('pop');
+  scoreStudentEl.classList.remove('pop');
+  scoreProblemEl.textContent = '--';
+  scoreStudentEl.textContent = '--';
+
+  // giro problema
+  playSpinSound(3600);
+  const resultP = await spinWheel(canvasP, remainingProblems, rotP);
+  rotP = resultP.finalRotation;
+  currentProblem = resultP.value;
+  scoreProblemEl.textContent = currentProblem;
+  scoreProblemEl.classList.add('pop');
+  remainingProblems = remainingProblems.filter(v => v !== currentProblem);
+  usedProblems.push(currentProblem);
+  renderChips();
+  drawWheel(canvasP, remainingProblems, rotP);
+
+  await new Promise(r=>setTimeout(r, 350));
+
+  // giro alumno
+  playSpinSound(3600);
+  const resultS = await spinWheel(canvasS, remainingStudents, rotS);
+  rotS = resultS.finalRotation;
+  currentStudent = resultS.value;
+  scoreStudentEl.textContent = currentStudent;
+  scoreStudentEl.classList.add('pop');
+  remainingStudents = remainingStudents.filter(v => v !== currentStudent);
+  usedStudents.push(currentStudent);
+  renderChips();
+  drawWheel(canvasS, remainingStudents, rotS);
+
+  playCelebration();
+  launchConfetti();
+
+  spinning = false;
+  btnStartTimer.disabled = false;
+
+  if(remainingStudents.length === 0){
+    btnSpin.disabled = true;
+    completeBanner.classList.add('show');
+  } else {
+    btnSpin.disabled = false;
+    round = usedStudents.length + 1;
+    renderChips();
+  }
+});
+
+/* ---------- CRONÓMETRO ---------- */
+const TIME_LIMIT = 120; // 2 minutos
+let timeLeft = TIME_LIMIT;
+let timerInterval = null;
+const clockEl = document.getElementById('clock');
+const btnPauseTimer = document.getElementById('btnPauseTimer');
+const btnResetTimer = document.getElementById('btnResetTimer');
+const whistleBanner = document.getElementById('whistleBanner');
+
+function formatTime(s){
+  const m = Math.floor(s/60).toString().padStart(2,'0');
+  const sec = (s%60).toString().padStart(2,'0');
+  return m + ':' + sec;
+}
+
+function updateClockDisplay(){
+  clockEl.textContent = formatTime(timeLeft);
+  clockEl.classList.remove('warn','danger');
+  if(timeLeft <= 10) clockEl.classList.add('danger');
+  else if(timeLeft <= 30) clockEl.classList.add('warn');
+}
+
+function resetClockState(){
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timeLeft = TIME_LIMIT;
+  updateClockDisplay();
+  btnPauseTimer.disabled = true;
+  btnPauseTimer.textContent = '⏸ PAUSAR';
+  btnResetTimer.disabled = true;
+}
+
+function markCurrentAsDone(){
+  if(currentProblem !== null && !doneProblems.includes(currentProblem)){
+    doneProblems.push(currentProblem);
+    currentProblem = null;
+  }
+  if(currentStudent !== null && !doneStudents.includes(currentStudent)){
+    doneStudents.push(currentStudent);
+    currentStudent = null;
+  }
+  renderChips();
+}
+
+btnStartTimer.addEventListener('click', ()=>{
+  if(timerInterval) return;
+  btnStartTimer.disabled = true;
+  btnPauseTimer.disabled = false;
+  btnResetTimer.disabled = false;
+  startPowerMusic();
+  timerInterval = setInterval(()=>{
+    timeLeft--;
+    updateClockDisplay();
+    if(timeLeft <= 0){
+      clearInterval(timerInterval);
+      timerInterval = null;
+      stopPowerMusic();
+      playAlarm();
+      markCurrentAsDone();
+      whistleBanner.classList.add('show');
+      btnStartTimer.disabled = true;
+      btnPauseTimer.disabled = true;
+      setTimeout(startBackgroundMusic, 2300);
+    }
+  }, 1000);
+});
+
+btnPauseTimer.addEventListener('click', ()=>{
+  if(timerInterval){
+    clearInterval(timerInterval);
+    timerInterval = null;
+    stopPowerMusic();
+    btnPauseTimer.textContent = '▶ REANUDAR';
+  } else {
+    startPowerMusic();
+    timerInterval = setInterval(()=>{
+      timeLeft--;
+      updateClockDisplay();
+      if(timeLeft <= 0){
+        clearInterval(timerInterval);
+        timerInterval = null;
+        stopPowerMusic();
+        playAlarm();
+        markCurrentAsDone();
+        whistleBanner.classList.add('show');
+        btnStartTimer.disabled = true;
+        btnPauseTimer.disabled = true;
+        setTimeout(startBackgroundMusic, 2300);
+      }
+    }, 1000);
+    btnPauseTimer.textContent = '⏸ PAUSAR';
+  }
+});
+
+btnResetTimer.addEventListener('click', ()=>{
+  resetClockState();
+  resetPowerMusic();
+  startBackgroundMusic();
+  btnStartTimer.disabled = (currentProblem===null);
+});
+
+document.getElementById('btnDismissWhistle').addEventListener('click', ()=>{
+  whistleBanner.classList.remove('show');
+});
+
+/* ---------- ALARMA SONORA (Web Audio, sin archivos externos) ---------- */
+function playAlarm(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const beepTimes = [0, 0.45, 0.9, 1.35, 1.8];
+    beepTimes.forEach(t=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime + t);
+      gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + t + 0.3);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(ctx.currentTime + t);
+      osc.stop(ctx.currentTime + t + 0.32);
+    });
+  }catch(e){ /* audio no disponible */ }
+}
+
+/* ---------- REINICIAR TORNEO ---------- */
+document.getElementById('btnResetGame').addEventListener('click', ()=>{
+  if(!confirm('¿Reiniciar todo el torneo? Se restablecerán los 29 problemas y los 16 jugadores.')) return;
+  remainingProblems = Array.from({length: TOTAL_PROBLEMS}, (_,i)=>i+1);
+  remainingStudents = Array.from({length: TOTAL_STUDENTS}, (_,i)=>i+1);
+  usedProblems = [];
+  usedStudents = [];
+  doneProblems = [];
+  doneStudents = [];
+  round = 1;
+  currentProblem = null;
+  currentStudent = null;
+  rotP = 0; rotS = 0;
+  scoreProblemEl.textContent = '--';
+  scoreStudentEl.textContent = '--';
+  scoreProblemEl.classList.remove('pop');
+  scoreStudentEl.classList.remove('pop');
+  completeBanner.classList.remove('show');
+  btnSpin.disabled = false;
+  resetClockState();
+  resetPowerMusic();
+  startBackgroundMusic();
+  drawWheel(canvasP, remainingProblems, rotP);
+  drawWheel(canvasS, remainingStudents, rotS);
+  renderChips();
+});
+</script>
+</body>
+</html>
